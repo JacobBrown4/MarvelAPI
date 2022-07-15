@@ -12,8 +12,8 @@ namespace MarvelAPI.WebAPI.Controllers
     [ApiController]
     public class MovieAppearanceController : ControllerBase
     {
-        private readonly IMovieAppearance _service;
-        public MovieAppearanceController(IMovieAppearnceService service)
+        private readonly IMovieAppearanceService _service;
+        public MovieAppearanceController(IMovieAppearanceService service)
         {
             _service = service;
         }
