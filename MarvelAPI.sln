@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarvelAPI.Data", "MarvelAPI.Data\MarvelAPI.Data.csproj", "{16A790DD-22E9-49C8-BC1E-4C8C2D52E207}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarvelAPI.Models", "MarvelAPI.Models\MarvelAPI.Models.csproj", "{95D00FD0-D12F-4356-9A7C-A82455CD5727}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarvelAPI.Services", "MarvelAPI.Services\MarvelAPI.Services.csproj", "{2E86423D-7025-45CC-94D3-D469953E2426}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarvelAPI.WebAPI", "MarvelAPI.WebAPI\MarvelAPI.WebAPI.csproj", "{740B3FF0-5CC8-460D-957D-A20A7BBA859F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{16A790DD-22E9-49C8-BC1E-4C8C2D52E207}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16A790DD-22E9-49C8-BC1E-4C8C2D52E207}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16A790DD-22E9-49C8-BC1E-4C8C2D52E207}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16A790DD-22E9-49C8-BC1E-4C8C2D52E207}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95D00FD0-D12F-4356-9A7C-A82455CD5727}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95D00FD0-D12F-4356-9A7C-A82455CD5727}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95D00FD0-D12F-4356-9A7C-A82455CD5727}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95D00FD0-D12F-4356-9A7C-A82455CD5727}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E86423D-7025-45CC-94D3-D469953E2426}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E86423D-7025-45CC-94D3-D469953E2426}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E86423D-7025-45CC-94D3-D469953E2426}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E86423D-7025-45CC-94D3-D469953E2426}.Release|Any CPU.Build.0 = Release|Any CPU
+		{740B3FF0-5CC8-460D-957D-A20A7BBA859F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{740B3FF0-5CC8-460D-957D-A20A7BBA859F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{740B3FF0-5CC8-460D-957D-A20A7BBA859F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{740B3FF0-5CC8-460D-957D-A20A7BBA859F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
