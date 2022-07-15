@@ -1,9 +1,17 @@
+using Microsoft.EntityFrameworkCore;
+using MarvelAPI.Data;
+using MarvelAPI.Services.MovieAppearance;
+
 var builder = WebApplication.CreateBuilder(args);
 
 //Add connection string and DbContext setup
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionNick");
 // var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionZach");
 // var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionMary");
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+
+// Add Services/Interfaces for Dependency Injection here
+builder.Services.AddScoped<IMovieAppearanceService, MovieAppearanceService>();
 
 // Add services to the container.
 
