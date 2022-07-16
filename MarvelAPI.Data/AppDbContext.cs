@@ -7,6 +7,8 @@ namespace MarvelAPI.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
+        public DbSet<CharacterEntity> Characters { get; set; }
+
         public DbSet<MovieAppearanceEntity> MovieAppearances { get; set; }
     }
 }
