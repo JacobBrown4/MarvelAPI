@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MarvelAPI.Data.Entities
 {
-    public class MoviesEntity
+    public class Movies
     {
         [Key]
         [Required]
