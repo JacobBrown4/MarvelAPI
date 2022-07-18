@@ -3,6 +3,7 @@ using MarvelAPI.Data;
 using MarvelAPI.Services.MovieAppearance;
 using MarvelAPI.Services.Character;
 using MarvelAPI.Services.MoviesService;
+using MarvelAPI.Services.TVShows;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(conn
 builder.Services.AddScoped<IMovieAppearanceService, MovieAppearanceService>();
 builder.Services.AddScoped<ICharacterService, CharacterService>();
 builder.Services.AddScoped<IMoviesService, MoviesService>();
+builder.Services.AddScoped<ITVShowsService, TVShowsService>();
 
 // Add services to the container.
 
