@@ -46,10 +46,5 @@ namespace MarvelAPI.Services.MoviesService
             _dbContext.Movies.Remove(moviesEntity);
             return await _dbContext.SaveChangesAsync() == 1;
         }
-
-        public Task<IEnumerable<Movies>> GetAllMoviessAsync()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

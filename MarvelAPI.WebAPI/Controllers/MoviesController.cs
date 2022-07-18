@@ -37,7 +37,7 @@ namespace MarvelAPI.WebAPI.Controllers
         [HttpGet]
         public async Task<IEnumerable<Movies>> GetAllMoviesAsync()
         {
-            var movies = await _service.GetAllMoviessAsync();
+            var movies = await _service.GetAllMoviesAsync();
             return movies;
         }
 
