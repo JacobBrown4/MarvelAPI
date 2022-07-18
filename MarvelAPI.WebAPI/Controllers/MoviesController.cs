@@ -20,7 +20,7 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateGameAsync([FromBody] MoviesEntity model)
+        public async Task<IActionResult> CreateMoviesAsync([FromBody] MoviesEntity model)
         {
             if (!ModelState.IsValid)
             {
