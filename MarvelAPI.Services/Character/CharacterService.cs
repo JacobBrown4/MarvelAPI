@@ -27,7 +27,7 @@ namespace MarvelAPI.Services.Character
             return (IEnumerable<CharacterListItem>)characterList;
         }
 
-        public async Task<CharacterDetail> GetCharacterById(int id)
+        public async Task<CharacterDetail> GetCharacterByIdAsync(int id)
         {
             var character = await _dbContext.Characters.FirstOrDefaultAsync(character => character.Id == id);
             var result = new CharacterDetail{
@@ -58,7 +58,9 @@ namespace MarvelAPI.Services.Character
         
         public async Task<bool> DeleteCharacterAsync(int id)
         {
-            throw new NotImplementedException();
+            var character = await _dbContext.Characters.FindAsync(id);
+            _dbContext.Characters.Remove(character);
+            return await _dbContext.SaveChangesAsync() == 1;
         }
     }
 }

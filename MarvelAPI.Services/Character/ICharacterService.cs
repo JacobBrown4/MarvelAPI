@@ -7,7 +7,7 @@ namespace MarvelAPI.Services.Character
     {
         Task<bool> CreateCharacterAsync(CharacterCreate model);
         Task<IEnumerable<CharacterListItem>> GetAllCharactersAsync();
-        Task<CharacterDetail> GetCharacterById(int id);
+        Task<CharacterDetail> GetCharacterByIdAsync(int id);
         Task<bool> UpdateCharacterAsync(CharacterEntity request);
         Task<bool> DeleteCharacterAsync(int id);
     }
