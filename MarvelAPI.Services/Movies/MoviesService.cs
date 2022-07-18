@@ -12,9 +12,9 @@ namespace MarvelAPI.Services.MoviesService
             _dbContext = dbContext;
         }
 
-        public async Task<bool> CreateMoviesAsync (Movies request)
+        public async Task<bool> CreateMoviesAsync (MoviesEntity request)
         {
-            var moviesEntity = new Movies
+            var moviesEntity = new MoviesEntity
             {
                 Title = request.Title,
                 ReleaseYear = request.ReleaseYear
@@ -24,14 +24,14 @@ namespace MarvelAPI.Services.MoviesService
             return numberOfChanges == 1;
         }
 
-        public async Task<IEnumerable<Movies>> GetAllMoviesAsync()
+        public async Task<IEnumerable<MoviesEntity>> GetAllMoviesAsync()
         {
             var movies = await _dbContext.Movies
             .ToListAsync();
             return movies;
         }
 
-        public async Task<bool> UpdateMoviesAsync(Movies request)
+        public async Task<bool> UpdateMoviesAsync(MoviesEntity request)
         {
             var moviesEntity = await _dbContext.Movies.FindAsync(request.Id);
             moviesEntity.Title = request.Title;

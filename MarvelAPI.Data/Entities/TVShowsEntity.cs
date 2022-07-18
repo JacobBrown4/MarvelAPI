@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MarvelAPI.Data.Entities
 {
-    public class TVShows
+    public class TVShowsEntity
     {
         [Key]
         public int Id { get; set; }
