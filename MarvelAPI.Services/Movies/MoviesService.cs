@@ -7,9 +7,9 @@ namespace MarvelAPI.Services.MoviesService
     public class MoviesService : IMoviesService
     {
         private readonly AppDbContext _dbContext;
-        public MoviesService (AppDbContext DbContext)
+        public MoviesService (AppDbContext dbContext)
         {
-            _dbContext = DbContext;
+            _dbContext = dbContext;
         }
 
         public async Task<bool> CreateMoviesAsync (Movies request)
@@ -45,6 +45,11 @@ namespace MarvelAPI.Services.MoviesService
             var moviesEntity = await _dbContext.Movies.FindAsync(Id);
             _dbContext.Movies.Remove(moviesEntity);
             return await _dbContext.SaveChangesAsync() == 1;
+        }
+
+        public Task<IEnumerable<Movies>> GetAllMoviessAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

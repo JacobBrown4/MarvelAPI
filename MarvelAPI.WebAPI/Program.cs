@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using MarvelAPI.Data;
 using MarvelAPI.Services.MovieAppearance;
 using MarvelAPI.Services.Character;
+using MarvelAPI.Services.MoviesService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(conn
 // Add Services/Interfaces for Dependency Injection here
 builder.Services.AddScoped<IMovieAppearanceService, MovieAppearanceService>();
 builder.Services.AddScoped<ICharacterService, CharacterService>();
+builder.Services.AddScoped<IMoviesService, MoviesService>();
 
 // Add services to the container.
 
