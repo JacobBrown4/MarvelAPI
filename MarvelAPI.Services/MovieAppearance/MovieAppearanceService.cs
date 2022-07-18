@@ -14,12 +14,14 @@ namespace MarvelAPI.Services.MovieAppearance
         {
             _dbContext = dbContext;
         }
-        public async Task<bool> CreateMovieAppearanceAsync(MovieAppearanceCreate model)
+
+        // * POST
+        public async Task<bool> CreateMovieAppearanceAsync(MovieAppearanceCreate request)
         {
             var entity = new MovieAppearanceEntity
             {
-                CharacterId = model.CharacterId,
-                MovieId = model.MovieId
+                CharacterId = request.CharacterId,
+                MovieId = request.MovieId
             };
 
             _dbContext.MovieAppearances.Add(entity);
@@ -29,9 +31,48 @@ namespace MarvelAPI.Services.MovieAppearance
             return numberOfChanges == 1;
         }
 
-        private async Task<MovieAppearanceEntity> GetMovieAppearanceByIdAsync(int id)
+        // * GET
+        public async Task<IEnumerable<MovieAppearanceEntity>> GetAllMovieAppearancesAsync()
         {
-            return await _dbContext.MovieAppearances.FirstOrDefaultAsync(movieAppearance => movieAppearance.Id == id);
+            var movieAppearances = await _dbContext.MovieAppearances
+
+            .ToListAsync();
+
+            return movieAppearances;
+        }
+
+        public async Task<MovieAppearanceDetail> GetMovieAppearanceDetailByIdAsync (int id)
+        {
+            var movieAppearanceEntity = await _dbContext.MovieAppearances.FirstOrDefaultAsync(e => e.Id == id);
+
+            return movieAppearanceEntity is null ? null : new MovieAppearanceDetail
+            {
+                Id = movieAppearanceEntity.Id,
+                MovieId = movieAppearanceEntity.MovieId,
+                CharacterId = movieAppearanceEntity.CharacterId
+            };
+        }
+
+        // * PUT
+        public async Task<bool> UpdateMovieAppearanceAsync(MovieAppearanceDetail request)
+        {
+            var movieAppearanceEntity = await _dbContext.MovieAppearances.FindAsync(request.Id);
+            movieAppearanceEntity.CharacterId = request.CharacterId;
+            movieAppearanceEntity.MovieId = request.MovieId;
+
+            var numberOfChanges = await _dbContext.SaveChangesAsync();
+
+            return numberOfChanges == 1;
+        }
+
+        // * DELETE
+        public async Task<bool> DeleteMovieAppearanceAsync(int id)
+        {
+            var movieAppearanceEntity = await _dbContext.MovieAppearances.FindAsync(id);
+
+            _dbContext.MovieAppearances.Remove(movieAppearanceEntity);
+
+            return await _dbContext.SaveChangesAsync() == 1;
         }
     }
 }
