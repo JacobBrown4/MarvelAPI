@@ -62,7 +62,7 @@ namespace MarvelAPI.WebAPI.Controllers
 
         }
 
-        [HttpDelete("{movieAppearanceId:it}")]
+        [HttpDelete("{movieAppearanceId:int}")]
         public async Task<IActionResult> DeleteMovieAppearanceAsync(int id)
         {
             var movieAppearanceToDelete = await _service.DeleteMovieAppearanceAsync(id);

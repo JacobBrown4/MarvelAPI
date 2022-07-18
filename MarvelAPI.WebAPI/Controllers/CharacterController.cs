@@ -32,7 +32,7 @@ namespace MarvelAPI.WebAPI.Controllers
             return Ok(await _service.GetAllCharactersAsync());
         }
 
-        [HttpGet]
+        [HttpGet("{characterId:int}")]
         public async Task<IActionResult> GetCharacterByIdAsync([FromBody] int characterId) {
             var character = await _service.GetCharacterByIdAsync(characterId);
             if (character == default) {
