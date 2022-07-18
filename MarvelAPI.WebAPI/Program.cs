@@ -3,7 +3,7 @@ using MarvelAPI.Data;
 using MarvelAPI.Services.MovieAppearance;
 using MarvelAPI.Services.Character;
 using MarvelAPI.Services.MoviesService;
-using MarvelAPI.Services.TVShows;
+using MarvelAPI.Services.TVShowsService;
 
 var builder = WebApplication.CreateBuilder(args);
 
