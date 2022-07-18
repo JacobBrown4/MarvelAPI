@@ -10,5 +10,7 @@ namespace MarvelAPI.Data
         public DbSet<CharacterEntity> Characters { get; set; }
 
         public DbSet<MovieAppearanceEntity> MovieAppearances { get; set; }
+
+        public DbSet<MoviesEntity> Movies { get; set ;}
     }
 }
