@@ -20,7 +20,7 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateGameAsync([FromBody] TVShows model)
+        public async Task<IActionResult> CreateGameAsync([FromBody] TVShowsEntity model)
         {
             if (!ModelState.IsValid)
             {
@@ -35,7 +35,7 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<TVShows>> GetAllTVShowsAsync()
+        public async Task<IEnumerable<TVShowsEntity>> GetAllTVShowsAsync()
         {
             var tvShows = await _service.GetAllTVShowsAsync();
             return tvShows;

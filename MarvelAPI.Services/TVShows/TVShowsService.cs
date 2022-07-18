@@ -12,9 +12,9 @@ namespace MarvelAPI.Services.TVShowsService
             _dbContext = dbContext;
         }
 
-        public async Task<bool> CreateTVShowsAsync (TVShows request)
+        public async Task<bool> CreateTVShowsAsync (TVShowsEntity request)
         {
-            var tvShowsEntity = new TVShows
+            var tvShowsEntity = new TVShowsEntity
             {
                 Title = request.Title,
                 ReleaseYear = request.ReleaseYear
@@ -24,14 +24,14 @@ namespace MarvelAPI.Services.TVShowsService
             return numberOfChanges == 1;
         }
 
-        public async Task<IEnumerable<TVShows>> GetAllTVShowsAsync()
+        public async Task<IEnumerable<TVShowsEntity>> GetAllTVShowsAsync()
         {
             var tvShows = await _dbContext.TVShows
             .ToListAsync();
             return tvShows;
         }
 
-        public async Task<bool> UpdateTVShowsAsync(TVShows request)
+        public async Task<bool> UpdateTVShowsAsync(TVShowsEntity request)
         {
             var tvShowsEntity = await _dbContext.TVShows.FindAsync(request.Id);
             tvShowsEntity.Title = request.Title;
