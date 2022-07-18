@@ -8,14 +8,12 @@ namespace MarvelAPI.Data.Entities
         [Key]
         public int Id { get; set; }
 
-        [Required]
         public MoviesEntity Movie { get; set; }
 
         [Required]
         [ForeignKey(nameof(Movie))]
         public int MovieId { get; set; }
 
-        [Required]
         public CharacterEntity Character { get; set; }
 
         [Required]
