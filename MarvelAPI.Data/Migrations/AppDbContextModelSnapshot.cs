@@ -65,12 +65,22 @@ namespace MarvelAPI.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("CharacterId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CharacterId");
+
+                    b.HasIndex("MovieId");
 
                     b.ToTable("MovieAppearances");
                 });
 
-            modelBuilder.Entity("MarvelAPI.Data.Entities.Movies", b =>
+            modelBuilder.Entity("MarvelAPI.Data.Entities.MoviesEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -78,7 +88,7 @@ namespace MarvelAPI.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("ReleaseYear")
+                    b.Property<DateTime?>("ReleaseYear")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
@@ -90,7 +100,7 @@ namespace MarvelAPI.Data.Migrations
                     b.ToTable("Movies");
                 });
 
-            modelBuilder.Entity("MarvelAPI.Data.Entities.TVShows", b =>
+            modelBuilder.Entity("MarvelAPI.Data.Entities.TVShowsEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -98,10 +108,10 @@ namespace MarvelAPI.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("ReleaseYear")
+                    b.Property<DateTime?>("ReleaseYear")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Seasons")
+                    b.Property<int?>("Seasons")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -111,6 +121,25 @@ namespace MarvelAPI.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TVShows");
+                });
+
+            modelBuilder.Entity("MarvelAPI.Data.Entities.MovieAppearanceEntity", b =>
+                {
+                    b.HasOne("MarvelAPI.Data.Entities.CharacterEntity", "Character")
+                        .WithMany()
+                        .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MarvelAPI.Data.Entities.MoviesEntity", "Movie")
+                        .WithMany()
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Character");
+
+                    b.Navigation("Movie");
                 });
 #pragma warning restore 612, 618
         }

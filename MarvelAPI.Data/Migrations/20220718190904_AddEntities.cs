@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MarvelAPI.Data.Migrations
 {
-    public partial class MoviesCreate : Migration
+    public partial class AddEntities : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -28,25 +28,13 @@ namespace MarvelAPI.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MovieAppearances",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MovieAppearances", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Movies",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReleaseYear = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    ReleaseYear = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -60,28 +48,64 @@ namespace MarvelAPI.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReleaseYear = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Seasons = table.Column<int>(type: "int", nullable: false)
+                    ReleaseYear = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Seasons = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TVShows", x => x.Id);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "MovieAppearances",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MovieId = table.Column<int>(type: "int", nullable: false),
+                    CharacterId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MovieAppearances", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MovieAppearances_Characters_CharacterId",
+                        column: x => x.CharacterId,
+                        principalTable: "Characters",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MovieAppearances_Movies_MovieId",
+                        column: x => x.MovieId,
+                        principalTable: "Movies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MovieAppearances_CharacterId",
+                table: "MovieAppearances",
+                column: "CharacterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MovieAppearances_MovieId",
+                table: "MovieAppearances",
+                column: "MovieId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Characters");
-
-            migrationBuilder.DropTable(
                 name: "MovieAppearances");
 
             migrationBuilder.DropTable(
-                name: "Movies");
+                name: "TVShows");
 
             migrationBuilder.DropTable(
-                name: "TVShows");
+                name: "Characters");
+
+            migrationBuilder.DropTable(
+                name: "Movies");
         }
     }
 }
