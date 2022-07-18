@@ -5,9 +5,9 @@ namespace MarvelAPI.Services.TVShowsService
 {
     public interface ITVShowsService
     {
-        Task<bool> CreateTVShowsAsync(TVShows request);
-        Task<IEnumerable<TVShows>> GetAllTVShowsAsync();
-        Task<bool> UpdateTVShowsAsync(TVShows request);
+        Task<bool> CreateTVShowsAsync(TVShowsEntity request);
+        Task<IEnumerable<TVShowsEntity>> GetAllTVShowsAsync();
+        Task<bool> UpdateTVShowsAsync(TVShowsEntity request);
         Task<bool> DeleteTVShowsAsync(int id);
     }
 }
