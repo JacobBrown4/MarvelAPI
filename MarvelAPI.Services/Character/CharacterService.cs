@@ -39,6 +39,24 @@ namespace MarvelAPI.Services.Character
             return result;
         }
 
+        public async Task<IEnumerable<CharacterAbilities>> GetCharactersByAbilityAsync(string ability) {
+            var result = new List<CharacterAbilities>();
+            // Getting most up-to-date list of characters
+            var currentCharacters = await _dbContext.Characters.ToListAsync();
+            foreach (var c in currentCharacters) {
+                if (c.Abilities.Contains(ability)) {
+                    result.Add(
+                        new CharacterAbilities{
+                            Id = c.Id,
+                            FullName = c.FullName,
+                            Abilities = c.Abilities
+                        }
+                    );
+                }
+            }
+            return result;
+        }
+
         public async Task<CharacterDetail> GetCharacterByIdAsync(int id)
         {
             var character = await _dbContext.Characters.FirstOrDefaultAsync(character => character.Id == id);

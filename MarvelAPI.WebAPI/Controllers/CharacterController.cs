@@ -42,6 +42,12 @@ namespace MarvelAPI.WebAPI.Controllers
             return Ok(character);
         }
 
+        [HttpGet("{ability}")]
+        public async Task<IActionResult> GetCharactersByAbilityAsync([FromRoute] string ability) {
+            var result = await _service.GetCharactersByAbilityAsync(ability);
+            return Ok(result);
+        }
+
         [HttpPut]
         public async Task<IActionResult> UpdateCharacterAsync([FromBody] CharacterEntity model) {
             if (!ModelState.IsValid)
