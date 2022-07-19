@@ -52,20 +52,17 @@ namespace MarvelAPI.WebAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-            if (await _service.UpdateMovieAppearanceAsync(model)) {
+            if (await _service.UpdateMovieAppearanceAsync(model))
+            {
                 return Ok("Character updated successfully.");
             }
             return BadRequest("Could not update character.");
         }
 
-        }
-
         [HttpDelete("{movieAppearanceId:int}")]
         public async Task<IActionResult> DeleteMovieAppearanceAsync([FromRoute] int movieAppearanceId)
         {
-            return await _service.DeleteCharacterAsync(movieAppearanceId) ?
-            Ok($"Movie Appearance with ID {movieAppearanceId} deleted successfully.") :
-            BadRequest($"Movie with ID {movieAppearanceId} could not be deleted.");
+            return await _service.DeleteMovieAppearanceAsync(movieAppearanceId) ? Ok($"Movie Appearance with ID {movieAppearanceId} was deleted successfully.") : BadRequest($"Movie Appearance with ID {movieAppearanceId} could not be deleted.");
         }
-}
+    }
 }
