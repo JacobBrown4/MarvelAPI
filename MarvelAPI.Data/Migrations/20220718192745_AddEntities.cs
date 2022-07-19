@@ -34,7 +34,7 @@ namespace MarvelAPI.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReleaseYear = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    ReleaseYear = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -48,7 +48,7 @@ namespace MarvelAPI.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReleaseYear = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ReleaseYear = table.Column<int>(type: "int", nullable: true),
                     Seasons = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
