@@ -15,6 +15,8 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateTVShowAppearanceAsync([FromBody] TVShowAppearanceCreate model)
         {
             if (!ModelState.IsValid)
@@ -31,6 +33,7 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<TVShowAppearanceDetail>),200)]
         public async Task<IEnumerable<TVShowAppearanceEntity>> GetAllTVShowAppearanceAsync()
         {
             var tvShowAppearance = await _service.GetAllTVShowAppearanceAsync();
@@ -38,6 +41,8 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpPut("{tvShowAppearanceId:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateTVShowAppearanceAsync([FromRoute] int Id)
         {
             var requestTVShowAppearance = await _service.GetTVShowAppearanceDetailByIdAsync(Id);
@@ -50,7 +55,9 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpDelete("{tvShowAppearanceId:int}")]
-        public async Task<IActionResult> DeleteTVShowAppearanceAsync(int Id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteTVShowAppearanceAsync([FromRoute] int Id)
         {
             var tvShowAppearanceToDelete = await _service.DeleteTVShowAppearanceAsync(Id);
             if (tvShowAppearanceToDelete is false)
