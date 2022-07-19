@@ -16,15 +16,15 @@ namespace MarvelAPI.Services.MovieAppearance
         }
 
         // * POST
-        public async Task<bool> CreateMovieAppearanceAsync(MovieAppearanceCreate request)
+        public async Task<bool> CreateMovieAppearanceAsync(MovieAppearanceCreate model)
         {
-            var entity = new MovieAppearanceEntity
+            var movieAppearance = new MovieAppearanceEntity
             {
                 CharacterId = request.CharacterId,
                 MovieId = request.MovieId
             };
 
-            _dbContext.MovieAppearances.Add(entity);
+            _dbContext.MovieAppearances.Add(movieAppearance);
 
             var numberOfChanges = await _dbContext.SaveChangesAsync();
 
