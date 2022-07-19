@@ -20,6 +20,8 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateMoviesAsync([FromBody] TVShowsEntity model)
         {
             if (!ModelState.IsValid)
@@ -35,6 +37,8 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IEnumerable<TVShowsEntity>> GetAllTVShowsAsync()
         {
             var tvShows = await _service.GetAllTVShowsAsync();
@@ -42,6 +46,8 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpPut("{tvShowsId:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateTVShowsAsync([FromRoute] int Id)
         {
             var requestTVShows = await _dbContext.TVShows.FindAsync(Id);
@@ -54,7 +60,9 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpDelete("{tvShowsId:int}")]
-        public async Task<IActionResult> DeleteTVShowsAsync(int Id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteTVShowsAsync([FromRoute] int Id)
         {
             var tvShowsToDelete = await _service.DeleteTVShowsAsync(Id);
             if (tvShowsToDelete is false)

@@ -4,6 +4,7 @@ using MarvelAPI.Services.MovieAppearance;
 using MarvelAPI.Services.Character;
 using MarvelAPI.Services.MoviesService;
 using MarvelAPI.Services.TVShowsService;
+using MarvelAPI.Services.TVShowAppearance;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,7 @@ builder.Services.AddScoped<IMovieAppearanceService, MovieAppearanceService>();
 builder.Services.AddScoped<ICharacterService, CharacterService>();
 builder.Services.AddScoped<IMoviesService, MoviesService>();
 builder.Services.AddScoped<ITVShowsService, TVShowsService>();
+builder.Services.AddScoped<ITVShowAppearanceService, TVShowAppearanceService>();
 
 // Add services to the container.
 
