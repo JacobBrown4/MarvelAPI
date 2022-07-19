@@ -47,6 +47,7 @@ namespace MarvelAPI.Services.Character
                 FullName = character.FullName,
                 Age = character.Age,
                 Location = character.Location,
+                Origin = character.Origin,
                 Abilities = character.Abilities,
                 AbilitiesOrigin = character.AbilitiesOrigin
             };
