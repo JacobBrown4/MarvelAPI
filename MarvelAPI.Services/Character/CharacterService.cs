@@ -27,8 +27,16 @@ namespace MarvelAPI.Services.Character
         public async Task<IEnumerable<CharacterListItem>> GetAllCharactersAsync()
         {
             var characterList = await _dbContext.Characters.ToListAsync();
-            // TODO: check to see if this cast works as expected
-            return (IEnumerable<CharacterListItem>)characterList;
+            var result = new List<CharacterListItem>();
+            foreach ( var c in characterList) {
+                result.Add(
+                    new CharacterListItem{
+                        Id = c.Id,
+                        FullName = c.FullName
+                    }
+                );
+            }
+            return result;
         }
 
         public async Task<CharacterDetail> GetCharacterByIdAsync(int id)

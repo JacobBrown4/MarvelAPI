@@ -34,7 +34,7 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpGet("{characterId:int}")]
-        public async Task<IActionResult> GetCharacterByIdAsync([FromBody] int characterId) {
+        public async Task<IActionResult> GetCharacterByIdAsync([FromRoute] int characterId) {
             var character = await _service.GetCharacterByIdAsync(characterId);
             if (character == default) {
                 return NotFound();
