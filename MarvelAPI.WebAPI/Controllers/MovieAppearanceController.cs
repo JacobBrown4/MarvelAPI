@@ -63,15 +63,9 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpDelete("{movieAppearanceId:int}")]
-        public async Task<IActionResult> DeleteMovieAppearanceAsync(int id)
+        public async Task<IActionResult> DeleteMovieAppearanceAsync([FromRoute] int movieAppearanceId)
         {
-            var movieAppearanceToDelete = await _service.DeleteMovieAppearanceAsync(id);
-
-            if (movieAppearanceToDelete is false)
-            {
-                return NotFound();
-            }
-            return Ok(movieAppearanceToDelete);
+            return await _service.DeleteMovieAppearanceAsync(movieAppearanceId) ? Ok($"Movie Appearance with ID {movieAppearanceId} was deleted successfully.") : BadRequest($"Movie Appearance with ID {movieAppearanceId} could not be deleted.");
         }
-}
+    }
 }
