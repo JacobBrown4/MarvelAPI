@@ -62,11 +62,16 @@ namespace MarvelAPI.Services.MovieAppearance
         }
 
         // * PUT
-        public async Task<bool> UpdateMovieAppearanceAsync(MovieAppearanceDetail request)
+        public async Task<bool> UpdateMovieAppearanceAsync(MovieAppearanceEntity request)
         {
-            var movieAppearanceEntity = await _dbContext.MovieAppearances.FindAsync(request.Id);
-            movieAppearanceEntity.CharacterId = request.CharacterId;
-            movieAppearanceEntity.MovieId = request.MovieId;
+            var movieAppearanceFound = await _dbContext.MovieAppearances.FindAsync(request.Id);
+
+            if (movieAppearanceFound is null)
+            {
+                return false;
+            }
+            movieAppearanceFound.CharacterId = request.CharacterId;
+            movieAppearanceFound.MovieId = request.MovieId;
 
             var numberOfChanges = await _dbContext.SaveChangesAsync();
 

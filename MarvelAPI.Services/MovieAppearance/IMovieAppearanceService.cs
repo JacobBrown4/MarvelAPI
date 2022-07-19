@@ -8,10 +8,10 @@ namespace MarvelAPI.Services.MovieAppearance
 {
     public interface IMovieAppearanceService
     {
-        Task<bool> CreateMovieAppearanceAsync(MovieAppearanceCreate request);
+        Task<bool> CreateMovieAppearanceAsync(MovieAppearanceCreate model);
         Task<IEnumerable<MovieAppearanceListItem>> GetAllMovieAppearancesAsync();
         Task<MovieAppearanceDetail> GetMovieAppearanceDetailByIdAsync(int id);
-        Task<bool> UpdateMovieAppearanceAsync(MovieAppearanceDetail request);
+        Task<bool> UpdateMovieAppearanceAsync(MovieAppearanceEntity request);
         Task<bool> DeleteMovieAppearanceAsync(int id);
     }
 }

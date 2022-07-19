@@ -40,38 +40,32 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<MovieAppearanceListItem>> GetAllMovieAppearancesAsync()
+        public async Task<IActionResult> GetAllMovieAppearancesAsync()
         {
-            var movieAppearances = await _service.GetAllMovieAppearancesAsync();
-
-            return movieAppearances;
+            return Ok(await _service.GetAllMovieAppearancesAsync());
         }
 
-        [HttpPut("{movieAppearanceId:int}")]
-        public async Task<IActionResult> UpdateMovieAppearanceAsync([FromRoute] int id)
+        [HttpPut]
+        public async Task<IActionResult> UpdateMovieAppearanceAsync([FromBody] MovieAppearanceEntity model)
         {
-            var requestMovieAppearance = await _service.GetMovieAppearanceDetailByIdAsync(id);
-
-            var updateMovieAppearance = await _service.UpdateMovieAppearanceAsync(requestMovieAppearance);
-
-            if (updateMovieAppearance is false)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                return BadRequest(ModelState);
             }
-            return Ok(updateMovieAppearance);
+            if (await _service.UpdateMovieAppearanceAsync(model)) {
+                return Ok("Character updated successfully.");
+            }
+            return BadRequest("Could not update character.");
+        }
 
         }
 
         [HttpDelete("{movieAppearanceId:int}")]
-        public async Task<IActionResult> DeleteMovieAppearanceAsync(int id)
+        public async Task<IActionResult> DeleteMovieAppearanceAsync([FromRoute] int movieAppearanceId)
         {
-            var movieAppearanceToDelete = await _service.DeleteMovieAppearanceAsync(id);
-
-            if (movieAppearanceToDelete is false)
-            {
-                return NotFound();
-            }
-            return Ok(movieAppearanceToDelete);
+            return await _service.DeleteCharacterAsync(movieAppearanceId) ?
+            Ok($"Movie Appearance with ID {movieAppearanceId} deleted successfully.") :
+            BadRequest($"Movie with ID {movieAppearanceId} could not be deleted.");
         }
 }
 }
