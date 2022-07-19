@@ -47,6 +47,7 @@ namespace MarvelAPI.Services.Character
                 FullName = character.FullName,
                 Age = character.Age,
                 Location = character.Location,
+                Origin = character.Origin,
                 Abilities = character.Abilities,
                 AbilitiesOrigin = character.AbilitiesOrigin
             };
@@ -62,6 +63,7 @@ namespace MarvelAPI.Services.Character
             characterFound.FullName = request.FullName;
             characterFound.Age = request.Age;
             characterFound.Location = request.Location;
+            characterFound.Origin = request.Origin;
             characterFound.Abilities = request.Abilities;
             characterFound.AbilitiesOrigin = request.AbilitiesOrigin;
             var numOfChanges = await _dbContext.SaveChangesAsync();
