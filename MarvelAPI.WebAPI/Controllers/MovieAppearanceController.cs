@@ -40,7 +40,7 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<MovieAppearanceEntity>> GetAllMovieAppearancesAsync()
+        public async Task<IEnumerable<MovieAppearanceListItem>> GetAllMovieAppearancesAsync()
         {
             var movieAppearances = await _service.GetAllMovieAppearancesAsync();
 
