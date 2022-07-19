@@ -6,6 +6,6 @@ namespace MarvelAPI.Models.Movies
     {
         public int Id { get; set; }   
         public string Title { get; set; }
-        public DateTime ReleaseYear { get; set; }
+        public int ReleaseYear { get; set; }
     }
 }

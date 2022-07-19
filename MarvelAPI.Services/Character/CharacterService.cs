@@ -8,6 +8,10 @@ namespace MarvelAPI.Services.Character
     public class CharacterService : ICharacterService
     {
         private readonly AppDbContext _dbContext;
+        public CharacterService (AppDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
 
         public async Task<bool> CreateCharacterAsync(CharacterCreate model)
         {
