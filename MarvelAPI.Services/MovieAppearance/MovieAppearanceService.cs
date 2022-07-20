@@ -63,14 +63,21 @@ namespace MarvelAPI.Services.MovieAppearance
         public async Task<MovieAppearanceDetail> GetMovieAppearanceByIdAsync (int movieAppearanceId)
         {
             var movieAppearance = await _dbContext.MovieAppearances.FirstOrDefaultAsync(mA => mA.Id == movieAppearanceId);
+            var movie = await _dbContext.Movies.FindAsync(movieAppearanceId);
 
             return movieAppearance is null ? null : new MovieAppearanceDetail
             {
                 Id = movieAppearance.Id,
                 MovieId = movieAppearance.MovieId,
-                CharacterId = movieAppearance.CharacterId
+                CharacterId = movieAppearance.CharacterId,
             };
         }
+
+        // public async Task<IEnumerable<MoviesEntity>> GetMovieAppearanceByMovieIdAsync(int movieId)
+        // {
+        //     var movieAppearance = new List<MovieAppearanceDetail>();
+        //     return (from mA in movieAppearance.)
+        // }
 
         // * PUT
         public async Task<bool> UpdateMovieAppearanceAsync(MovieAppearanceUpdate request)
