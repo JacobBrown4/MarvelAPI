@@ -61,24 +61,6 @@ namespace MarvelAPI.Services.MovieAppearance
                 );
             }
             return result;
-            // return movieAppearanceList;
-            // var result = new List<MovieAppearanceListItem>();
-            // foreach (var mA in movieAppearanceList) 
-            // {
-            //     if (mA.Character is null || mA.Movie is null)
-            //     {
-            //         continue;
-            //     }
-
-            //     result.Add(new MovieAppearanceListItem
-            //     {
-            //         Id = mA.Id,
-            //         Movie = mA.Movie.Title,
-            //         Character = mA.Character.FullName
-
-            //     });
-            // }
-            // return result;
         }
 
         public async Task<MovieAppearanceDetail> GetMovieAppearanceByIdAsync (int movieAppearanceId)
