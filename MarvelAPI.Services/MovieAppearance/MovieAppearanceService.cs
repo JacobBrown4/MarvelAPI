@@ -49,15 +49,15 @@ namespace MarvelAPI.Services.MovieAppearance
             return result;
         }
 
-        public async Task<MovieAppearanceDetail> GetMovieAppearanceDetailByIdAsync (int id)
+        public async Task<MovieAppearanceDetail> GetMovieAppearanceByIdAsync (int movieAppearanceId)
         {
-            var movieAppearanceEntity = await _dbContext.MovieAppearances.FirstOrDefaultAsync(e => e.Id == id);
+            var movieAppearance = await _dbContext.MovieAppearances.FirstOrDefaultAsync(mA => mA.Id == movieAppearanceId);
 
-            return movieAppearanceEntity is null ? null : new MovieAppearanceDetail
+            return movieAppearance is null ? null : new MovieAppearanceDetail
             {
-                Id = movieAppearanceEntity.Id,
-                MovieId = movieAppearanceEntity.MovieId,
-                CharacterId = movieAppearanceEntity.CharacterId
+                Id = movieAppearance.Id,
+                MovieId = movieAppearance.MovieId,
+                CharacterId = movieAppearance.CharacterId
             };
         }
 
@@ -79,11 +79,11 @@ namespace MarvelAPI.Services.MovieAppearance
         }
 
         // * DELETE
-        public async Task<bool> DeleteMovieAppearanceAsync(int id)
+        public async Task<bool> DeleteMovieAppearanceAsync(int movieAppearanceId)
         {
-            var movieAppearanceEntity = await _dbContext.MovieAppearances.FindAsync(id);
+            var movieAppearance = await _dbContext.MovieAppearances.FindAsync(movieAppearanceId);
 
-            _dbContext.MovieAppearances.Remove(movieAppearanceEntity);
+            _dbContext.MovieAppearances.Remove(movieAppearance);
 
             return await _dbContext.SaveChangesAsync() == 1;
         }
