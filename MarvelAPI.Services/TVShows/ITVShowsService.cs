@@ -8,7 +8,7 @@ namespace MarvelAPI.Services.TVShowsService
         Task<bool> CreateTVShowsAsync(TVShowsEntity request);
         Task<IEnumerable<TVShowsListItem>> GetAllTVShowsAsync();
         Task<TVShowsDetail> GetTVShowsByIdAsync(int Id);
-        Task<bool> UpdateTVShowsAsync(TVShowsEntity request);
+        Task<bool> UpdateTVShowsAsync(TVShowsUpdate request);
         Task<bool> DeleteTVShowsAsync(int id);
     }
 }

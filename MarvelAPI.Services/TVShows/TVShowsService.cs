@@ -55,16 +55,16 @@ namespace MarvelAPI.Services.TVShowsService
             return tvShowId;
         }
 
-        public async Task<bool> UpdateTVShowsAsync(TVShowsEntity request)
+        public async Task<bool> UpdateTVShowsAsync(TVShowsUpdate update)
         {
-            var tvShowsFound = await _dbContext.TVShows.FindAsync(request.Id);
+            var tvShowsFound = await _dbContext.TVShows.FindAsync(update.Id);
             if (tvShowsFound is null)
             {
                 return false;
             }
-            tvShowsFound.Title = request.Title;
-            tvShowsFound.ReleaseYear = request.ReleaseYear;
-            tvShowsFound.Seasons = request.Seasons;
+            tvShowsFound.Title = update.Title;
+            tvShowsFound.ReleaseYear = update.ReleaseYear;
+            tvShowsFound.Seasons = update.Seasons;
             var numberOfChanges = await _dbContext.SaveChangesAsync();
             return numberOfChanges == 1;
         }

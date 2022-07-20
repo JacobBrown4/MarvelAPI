@@ -45,7 +45,7 @@ namespace MarvelAPI.WebAPI.Controllers
         [HttpPut("{tvShowsId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateTVShowsAsync([FromBody] TVShowsEntity model)
+        public async Task<IActionResult> UpdateTVShowsAsync([FromBody] TVShowsUpdate model)
         {
             if (!ModelState.IsValid)
             {
