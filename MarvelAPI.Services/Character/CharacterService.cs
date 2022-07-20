@@ -44,7 +44,11 @@ namespace MarvelAPI.Services.Character
             // Getting most up-to-date list of characters
             var currentCharacters = await _dbContext.Characters.ToListAsync();
             foreach (var c in currentCharacters) {
-                if (c.Abilities.Contains(ability)) {
+                if (c.Abilities is null) {
+                    // Skip characters with null Abilities
+                    continue;
+                }
+                if (c.Abilities.ToLower().Contains(ability.ToLower())) {
                     result.Add(
                         new CharacterAbilities{
                             Id = c.Id,
