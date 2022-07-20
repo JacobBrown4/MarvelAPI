@@ -19,6 +19,12 @@ namespace MarvelAPI.Services.Character
                 FullName = model.FullName,
                 Age = model.Age
             };
+            // Verify no duplicates by FullName (formatting for comparison)
+            foreach (var c in await _dbContext.Characters.ToListAsync()) {
+                if (ReformatFullName(c) == ReformatFullName(character)) {
+                    return false;
+                }
+            }
             _dbContext.Characters.Add(character);
             var numOfChanges = await _dbContext.SaveChangesAsync();
             return numOfChanges == 1;
@@ -44,7 +50,11 @@ namespace MarvelAPI.Services.Character
             // Getting most up-to-date list of characters
             var currentCharacters = await _dbContext.Characters.ToListAsync();
             foreach (var c in currentCharacters) {
-                if (c.Abilities.Contains(ability)) {
+                if (c.Abilities is null) {
+                    // Skip characters with null Abilities
+                    continue;
+                }
+                if (c.Abilities.ToLower().Contains(ability.ToLower())) {
                     result.Add(
                         new CharacterAbilities{
                             Id = c.Id,
@@ -93,6 +103,15 @@ namespace MarvelAPI.Services.Character
             var character = await _dbContext.Characters.FindAsync(id);
             _dbContext.Characters.Remove(character);
             return await _dbContext.SaveChangesAsync() == 1;
+        }
+
+        private string ReformatFullName(CharacterEntity character) {
+            // Returns a reformatted version of a CharacterEntity's FullName,
+            // to be more easily compared against others formatted the same way.
+
+            // If there is a space/hyphen in the name, ignore it in the result to return
+            var result = String.Concat(character.FullName.Split(' ', '-')).ToLower();
+            return result;
         }
     }
 }
