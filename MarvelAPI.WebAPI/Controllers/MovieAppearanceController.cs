@@ -55,7 +55,7 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateMovieAppearanceAsync([FromBody] MovieAppearanceEntity model)
+        public async Task<IActionResult> UpdateMovieAppearanceAsync([FromBody] MovieAppearanceUpdate model)
         {
             if (!ModelState.IsValid)
             {
