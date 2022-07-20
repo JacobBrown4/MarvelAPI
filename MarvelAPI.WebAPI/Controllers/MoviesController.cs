@@ -12,62 +12,67 @@ namespace MarvelAPI.WebAPI.Controllers
     public class MoviesController : ControllerBase
     {
         private readonly IMoviesService _service;
-        private readonly AppDbContext _dbContext;
 
-        public MoviesController(IMoviesService service, AppDbContext dbContext)
+        public MoviesController(IMoviesService service)
         {
             _service = service;
-            _dbContext = dbContext;
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateMoviesAsync([FromBody] MoviesEntity model)
+        [ProducesResponseType(typeof(MoviesCreate), 200)]
+        public async Task<IActionResult> CreateMoviesAsync([FromBody] MoviesCreate model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var createMovies = await _service.CreateMoviesAsync(model);
-            if (createMovies)
+            if (await _service.CreateMoviesAsync(model))
             {
-                return Ok("Movie was added to Database.");
+                return Ok("The movie has been created and added to the database.");
             }
-            return BadRequest("Movie could not be added to Database.");
+            return BadRequest("Sorry, the movie could not be created.");
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<MoviesDetail>),200)]
-        public async Task<IEnumerable<MoviesEntity>> GetAllMoviesAsync()
+        [ProducesResponseType(typeof(IEnumerable<MoviesListItem>),200)]
+        public async Task<IActionResult> GetAllMoviesAsync()
         {
-            var movies = await _service.GetAllMoviesAsync();
-            return movies;
+            return Ok(await _service.GetAllMoviesAsync());
+        }
+
+        [HttpGet("{moviesId:int}")]
+        [ProducesResponseType(typeof(MoviesDetail), 200)]
+        public async Task<IActionResult> GetMovieByIdAsync([FromRoute] int moviesId)
+        {
+            var movie = await _service.GetMovieByIdAsync(moviesId);
+            if (movie == default)
+            {
+                return NotFound();
+            }
+            return Ok(movie);
         }
 
         [HttpPut("{moviesId:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateMoviesAsync([FromBody] MoviesEntity model)
+        [ProducesResponseType(typeof(MoviesUpdate), 200)]
+        public async Task<IActionResult> UpdateMoviesAsync([FromRoute] int moviesId,[FromBody] MoviesUpdate request)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest (ModelState);
+                return BadRequest(ModelState);
             }
-            if (await _service.UpdateMoviesAsync(model))
+            if (await _service.UpdateMoviesAsync(moviesId, request))
             {
-                return Ok("Movie was updated successfully.");
+                return Ok("The movie has been updated successfully.");
             }
-            return BadRequest("Could not update Movie.");
+            return BadRequest("The movie could not be updated.");
         }
 
         [HttpDelete("{moviesId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteMoviesAsync([FromRoute] int moviesId)
         {
             return await _service.DeleteMoviesAsync(moviesId) ?
-            Ok($"The Movie {moviesId} was successfully deleted."):
+            Ok($"The movie {moviesId} was successfully deleted."):
             BadRequest($"The Movie {moviesId} could not be deleted.");
         }
     }
