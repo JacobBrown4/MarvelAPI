@@ -18,10 +18,15 @@ namespace MarvelAPI.Services.MovieAppearance
         // * POST
         public async Task<bool> CreateMovieAppearanceAsync(MovieAppearanceCreate model)
         {
+            var character = await _dbContext.Characters.FindAsync(model.CharacterId);
+            var movie = await _dbContext.Movies.FindAsync(model.MovieId);
             var movieAppearance = new MovieAppearanceEntity
             {
                 CharacterId = model.CharacterId,
-                MovieId = model.MovieId
+                MovieId = model.MovieId,
+                Movie = movie,
+                Character = character
+
             };
 
             _dbContext.MovieAppearances.Add(movieAppearance);
@@ -35,14 +40,20 @@ namespace MarvelAPI.Services.MovieAppearance
         public async Task<IEnumerable<MovieAppearanceListItem>> GetAllMovieAppearancesAsync()
         {
             var movieAppearanceList = await _dbContext.MovieAppearances.ToListAsync();
+            // return movieAppearanceList;
             var result = new List<MovieAppearanceListItem>();
             foreach (var mA in movieAppearanceList) 
             {
+                if (mA.Character is null || mA.Movie is null)
+                {
+                    continue;
+                }
+
                 result.Add(new MovieAppearanceListItem
                 {
                     Id = mA.Id,
-                    Movie = mA.Movie,
-                    Character = mA.Character
+                    Movie = mA.Movie.Title,
+                    Character = mA.Character.FullName
 
                 });
             }
@@ -62,7 +73,7 @@ namespace MarvelAPI.Services.MovieAppearance
         }
 
         // * PUT
-        public async Task<bool> UpdateMovieAppearanceAsync(MovieAppearanceEntity request)
+        public async Task<bool> UpdateMovieAppearanceAsync(MovieAppearanceUpdate request)
         {
             var movieAppearanceFound = await _dbContext.MovieAppearances.FindAsync(request.Id);
 
