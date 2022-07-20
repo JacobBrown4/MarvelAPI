@@ -47,29 +47,28 @@ namespace MarvelAPI.WebAPI.Controllers
 
         [HttpPut("{moviesId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateMoviesAsync([FromRoute] int Id)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateMoviesAsync([FromBody] MoviesEntity model)
         {
-            var requestMovies = await _dbContext.Movies.FindAsync(Id);
-            var updatedMovies = await _service.UpdateMoviesAsync(requestMovies);
-            if (updatedMovies is false)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                return BadRequest (ModelState);
             }
-            return Ok(updatedMovies);
+            if (await _service.UpdateMoviesAsync(model))
+            {
+                return Ok("Movie was updated successfully.");
+            }
+            return BadRequest("Could not update Movie.");
         }
 
         [HttpDelete("{moviesId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteMoviesAsync([FromRoute] int Id)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteMoviesAsync([FromRoute] int moviesId)
         {
-            var moviesToDelete = await _service.DeleteMoviesAsync(Id);
-            if (moviesToDelete is false)
-            {
-                return NotFound();
-            }
-            return Ok(moviesToDelete);
+            return await _service.DeleteMoviesAsync(moviesId) ?
+            Ok($"The Movie {moviesId} was successfully deleted."):
+            BadRequest($"The Movie {moviesId} could not be deleted.");
         }
     }
 }

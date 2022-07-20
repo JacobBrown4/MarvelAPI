@@ -47,29 +47,28 @@ namespace MarvelAPI.WebAPI.Controllers
 
         [HttpPut("{tvShowsId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateTVShowsAsync([FromRoute] int Id)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateTVShowsAsync([FromBody] TVShowsEntity model)
         {
-            var requestTVShows = await _dbContext.TVShows.FindAsync(Id);
-            var updatedTVShows = await _service.UpdateTVShowsAsync(requestTVShows);
-            if (updatedTVShows is false)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                return BadRequest (ModelState);
             }
-            return Ok(updatedTVShows);
+            if (await _service.UpdateTVShowsAsync(model))
+            {
+                return Ok("TV Show was updated successfully.");
+            }
+            return BadRequest("Could not update TV Show.");
         }
 
         [HttpDelete("{tvShowsId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteTVShowsAsync([FromRoute] int Id)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteTVShowsAsync([FromRoute] int tvShowsId)
         {
-            var tvShowsToDelete = await _service.DeleteTVShowsAsync(Id);
-            if (tvShowsToDelete is false)
-            {
-                return NotFound();
-            }
-            return Ok(tvShowsToDelete);
+            return await _service.DeleteTVShowsAsync(tvShowsId) ?
+            Ok($"The TV Show {tvShowsId} was successfully deleted."):
+            BadRequest($"The TV Show {tvShowsId} could not be deleted.");
         }
     }
 }

@@ -17,7 +17,8 @@ namespace MarvelAPI.Services.TVShowsService
             var tvShowsEntity = new TVShowsEntity
             {
                 Title = request.Title,
-                ReleaseYear = request.ReleaseYear
+                ReleaseYear = request.ReleaseYear,
+                Seasons = request.Seasons
             };
             _dbContext.TVShows.Add(tvShowsEntity);
             var numberOfChanges = await _dbContext.SaveChangesAsync();
@@ -33,17 +34,22 @@ namespace MarvelAPI.Services.TVShowsService
 
         public async Task<bool> UpdateTVShowsAsync(TVShowsEntity request)
         {
-            var tvShowsEntity = await _dbContext.TVShows.FindAsync(request.Id);
-            tvShowsEntity.Title = request.Title;
-            tvShowsEntity.ReleaseYear = request.ReleaseYear;
+            var tvShowsFound = await _dbContext.TVShows.FindAsync(request.Id);
+            if (tvShowsFound is null)
+            {
+                return false;
+            }
+            tvShowsFound.Title = request.Title;
+            tvShowsFound.ReleaseYear = request.ReleaseYear;
+            tvShowsFound.Seasons = request.Seasons;
             var numberOfChanges = await _dbContext.SaveChangesAsync();
             return numberOfChanges == 1;
         }
 
         public async Task<bool> DeleteTVShowsAsync(int Id)
         {
-            var tvShowsEntity = await _dbContext.TVShows.FindAsync(Id);
-            _dbContext.TVShows.Remove(tvShowsEntity);
+            var tvShowsDelete = await _dbContext.TVShows.FindAsync(Id);
+            _dbContext.TVShows.Remove(tvShowsDelete);
             return await _dbContext.SaveChangesAsync() == 1;
         }
     }
