@@ -54,7 +54,7 @@ namespace MarvelAPI.WebAPI.Controllers
 
         [HttpGet("{movieTitle}")]
         [ProducesResponseType(typeof(MoviesDetail), 200)]
-        public async Task<IActionResult> GetMovieByNmaeAsync([FromRoute] string movieTitle)
+        public async Task<IActionResult> GetMovieByTitleAsync([FromRoute] string movieTitle)
         {
             var movie = await _service.GetMovieByTitleAsync(movieTitle);
             return Ok(movie);

@@ -1,5 +1,3 @@
-// TODO Add usings
-
 namespace MarvelAPI.Models.TVShows
 {
     public class TVShowsDetail

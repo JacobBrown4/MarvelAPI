@@ -18,9 +18,10 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(TVShowsCreate), 200)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateMoviesAsync([FromBody] TVShowsEntity model)
+        public async Task<IActionResult> CreateMoviesAsync([FromBody] TVShowsCreate model)
         {
             if (!ModelState.IsValid)
             {
@@ -29,29 +30,59 @@ namespace MarvelAPI.WebAPI.Controllers
             var createTVShows = await _service.CreateTVShowsAsync(model);
             if (createTVShows)
             {
-                return Ok("TV Show was added to Database.");
+                return Ok("TV Show was created and added to Database.");
             }
             return BadRequest("TV Show could not be added to Database.");
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<TVShowsListItem>), 200)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAllTVShowsAsync()
         {
             return Ok(await _service.GetAllTVShowsAsync());
         }
 
+        [HttpGet("{Id:int}")]
+        [ProducesResponseType(typeof(TVShowsDetail), 200)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetTVShowsByIdAsync([FromRoute] int Id)
+        {
+            var tvShowId = await _service.GetTVShowsByIdAsync(Id);
+            if (tvShowId == default)
+            {
+                return NotFound("Could not find TV Show.");
+            }
+            return Ok(tvShowId);
+        }
+
+        [HttpGet("{tvShowTitle}")]
+        [ProducesResponseType(typeof(TVShowsDetail), 200)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetTVShowsByTitleAsync([FromRoute] string Title)
+        {
+            var tvShowTitle = await _service.GetTVShowsByTitleAsync(Title);
+            if (tvShowTitle == default)
+            {
+                return NotFound("Could not find TV Show.");
+            }
+            return Ok(tvShowTitle);
+        }
+
+
         [HttpPut("{tvShowsId:int}")]
+        [ProducesResponseType(typeof(TVShowsDetail), 200)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateTVShowsAsync([FromBody] TVShowsUpdate model)
+        public async Task<IActionResult> UpdateTVShowsAsync([FromRoute] int tvShowId, [FromBody] TVShowsUpdate update)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest (ModelState);
             }
-            if (await _service.UpdateTVShowsAsync(model))
+            if (await _service.UpdateTVShowsAsync(tvShowId, update))
             {
                 return Ok("TV Show was updated successfully.");
             }
