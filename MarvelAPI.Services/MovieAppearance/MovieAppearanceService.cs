@@ -18,15 +18,10 @@ namespace MarvelAPI.Services.MovieAppearance
         // * POST
         public async Task<bool> CreateMovieAppearanceAsync(MovieAppearanceCreate model)
         {
-            var character = await _dbContext.Characters.FindAsync(model.CharacterId);
-            var movie = await _dbContext.Movies.FindAsync(model.MovieId);
             var movieAppearance = new MovieAppearanceEntity
             {
                 CharacterId = model.CharacterId,
                 MovieId = model.MovieId,
-                Movie = movie,
-                Character = character
-
             };
 
             _dbContext.MovieAppearances.Add(movieAppearance);
@@ -39,31 +34,16 @@ namespace MarvelAPI.Services.MovieAppearance
         // * GET
         public async Task<IEnumerable<MovieAppearanceListItem>> GetAllMovieAppearancesAsync()
         {
-            var movieAppearanceList = await _dbContext.MovieAppearances.ToListAsync();
-            var temp = new List<MovieAppearanceDetail>();
-            foreach (var mA in movieAppearanceList) {
-                temp.Add(
-                    new MovieAppearanceDetail{
-                        Id = mA.Id,
-                        MovieId = mA.MovieId,
-                        CharacterId = mA.CharacterId
-                    }
-                );
-            }
-            var result = new List<MovieAppearanceListItem>();
-            foreach (var mad in temp) {
-                result.Add(
-                    new MovieAppearanceListItem{
-                        Id = mad.Id,
-                        Character = _dbContext.Characters.FindAsync(mad.CharacterId).Result.FullName,
-                        Movie = _dbContext.Movies.FindAsync(mad.MovieId).Result.Title
-                    }
-                );
-            }
-            return result;
+            var movieAppearanceList = await _dbContext.MovieAppearances.Select(x => new MovieAppearanceListItem{
+                Id = x.Id,
+                Character = x.Character.FullName,
+                Movie = x.Movie.Title,
+            }).ToListAsync();
+            return movieAppearanceList;
         }
 
-        public async Task<MovieAppearanceDetail> GetMovieAppearanceByIdAsync (int movieAppearanceId)
+        // * GET
+        public async Task<MovieAppearanceDetail> GetMovieAppearanceByIdAsync(int movieAppearanceId)
         {
             var movieAppearance = await _dbContext.MovieAppearances.FirstOrDefaultAsync(mA => mA.Id == movieAppearanceId);
 
