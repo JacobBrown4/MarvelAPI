@@ -47,14 +47,22 @@ namespace MarvelAPI.WebAPI.Controllers
             var movie = await _service.GetMovieByIdAsync(moviesId);
             if (movie == default)
             {
-                return NotFound();
+                return NotFound("Sorry, the movie you requested could not be found.");
             }
             return Ok(movie);
         }
 
+        [HttpGet("{movieTitle}")]
+        [ProducesResponseType(typeof(MoviesDetail), 200)]
+        public async Task<IActionResult> GetMovieByNmaeAsync([FromRoute] string movieTitle)
+        {
+            var movie = await _service.GetMovieByTitleAsync(movieTitle);
+            return Ok(movie);
+        }
+
         [HttpPut("{moviesId:int}")]
-        [ProducesResponseType(typeof(MoviesUpdate), 200)]
-        public async Task<IActionResult> UpdateMoviesAsync([FromRoute] int moviesId,[FromBody] MoviesUpdate request)
+        // [ProducesResponseType(typeof(MoviesUpdate), 200)]
+        public async Task<IActionResult> UpdateMoviesAsync([FromRoute] int moviesId, [FromBody] MoviesUpdate request)
         {
             if (!ModelState.IsValid)
             {
@@ -64,7 +72,7 @@ namespace MarvelAPI.WebAPI.Controllers
             {
                 return Ok("The movie has been updated successfully.");
             }
-            return BadRequest("The movie could not be updated.");
+            return BadRequest("Sorry, the movie could not be updated.");
         }
 
         [HttpDelete("{moviesId:int}")]
@@ -72,8 +80,8 @@ namespace MarvelAPI.WebAPI.Controllers
         public async Task<IActionResult> DeleteMoviesAsync([FromRoute] int moviesId)
         {
             return await _service.DeleteMoviesAsync(moviesId) ?
-            Ok($"The movie {moviesId} was successfully deleted."):
-            BadRequest($"The Movie {moviesId} could not be deleted.");
+            Ok($"The movie with ID {moviesId} was successfully deleted."):
+            BadRequest($"The movie with ID {moviesId} could not be deleted.");
         }
     }
 }

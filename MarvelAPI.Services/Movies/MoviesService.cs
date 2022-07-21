@@ -63,9 +63,35 @@ namespace MarvelAPI.Services.MoviesService
             return result;
         }
 
+        public async Task<IEnumerable<MoviesDetail>> GetMovieByTitleAsync(string movieTitle)
+        {
+            var result = new List<MoviesDetail>();
+            var currentMovie = await _dbContext.Movies.ToListAsync();
+            foreach (var m in currentMovie)
+            {
+                if (m.Title is null)
+                {
+                    continue;
+                }
+                if (m.Title.ToLower().Contains(movieTitle.ToLower()))
+                {
+                    result.Add
+                    (
+                        new MoviesDetail
+                        {
+                            Id = m.Id,
+                            Title = m.Title,
+                            ReleaseYear = (int)m.ReleaseYear
+                        }
+                    );
+                }
+            }
+            return result;
+        }
+
         public async Task<bool> UpdateMoviesAsync(int moviesId, MoviesUpdate request)
         {
-            var moviesFound = await _dbContext.Movies.FindAsync(request.Id);
+            var moviesFound = await _dbContext.Movies.FindAsync(moviesId);
             if (moviesFound is null)
             {
                 return false;
