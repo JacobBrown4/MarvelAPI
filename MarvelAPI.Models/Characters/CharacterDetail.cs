@@ -11,5 +11,7 @@ namespace MarvelAPI.Models.Characters
         public string Origin { get; set; }
         public string Abilities { get; set; }
         public string AbilitiesOrigin { get; set; }
+        // add list of movie list objects
+        // use display models not data
     }
 }
