@@ -1,13 +1,5 @@
-using System.Net.NetworkInformation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MarvelAPI.Data;
-using MarvelAPI.Data.Entities;
 using MarvelAPI.Models.MovieAppearance;
 using MarvelAPI.Services.MovieAppearance;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MarvelAPI.WebAPI.Controllers
@@ -54,14 +46,14 @@ namespace MarvelAPI.WebAPI.Controllers
             return Ok(movieAppearance);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateMovieAppearanceAsync([FromBody] MovieAppearanceUpdate model)
+        [HttpPut("{movieAppearanceId:int}")]
+        public async Task<IActionResult> UpdateMovieAppearanceAsync([FromRoute] int movieAppearanceId,[FromBody] MovieAppearanceUpdate model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            if (await _service.UpdateMovieAppearanceAsync(model))
+            if (await _service.UpdateMovieAppearanceAsync(movieAppearanceId, model))
             {
                 return Ok("The movie appearance has been updated successfully.");
             }

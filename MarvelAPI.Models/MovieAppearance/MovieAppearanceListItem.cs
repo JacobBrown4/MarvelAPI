@@ -1,5 +1,3 @@
-using MarvelAPI.Data.Entities;
-
 namespace MarvelAPI.Models.MovieAppearance
 {
     public class MovieAppearanceListItem
