@@ -35,55 +35,35 @@ namespace MarvelAPI.Services.TVShowsService
 
         public async Task<IEnumerable<TVShowsListItem>> GetAllTVShowsAsync()
         {
-            var tvShowList = await _dbContext.TVShows.ToListAsync();
-            var allTvShow = new List<TVShowsListItem>();
-            foreach (var tvS in tvShowList)
+            var tvShowList = await _dbContext.TVShows.Select(tvS => new TVShowsListItem
             {
-                allTvShow.Add(
-                    new TVShowsListItem
-                    {
-                        Id = tvS.Id,
-                        Title = tvS.Title
-                    }
-                );
-            }
-            return allTvShow;
+                Id = tvS.Id,
+                Title = tvS.Title
+            }).ToListAsync();
+            return tvShowList;
         }
-        public async Task<TVShowsDetail> GetTVShowsByIdAsync(int Id)
+        public async Task<IEnumerable<TVShowsDetail>> GetTVShowsByIdAsync(int Id)
         {
-            var tvShow = await _dbContext.TVShows.FirstOrDefaultAsync(tvShow => tvShow.Id == Id);
-            var tvShowId = new TVShowsDetail
+            var tvShowId = await _dbContext.TVShows.Select(tvSId => new TVShowsDetail
             {
-                Id = tvShow.Id,
-                Title = tvShow.Title,
-                ReleaseYear = (int)tvShow.ReleaseYear,
-                Seasons = (int)tvShow.Seasons
-            };
+                Id = tvSId.Id,
+                Title = tvSId.Title,
+                ReleaseYear = (int)tvSId.ReleaseYear,
+                Seasons = (int)tvSId.Seasons
+            }).ToListAsync();
             return tvShowId;
         }
 
         public async Task<IEnumerable<TVShowsDetail>> GetTVShowsByTitleAsync(string Title)
         {
-            var tvShow = new List<TVShowsDetail>();
-            var tvShowTitle = await _dbContext.TVShows.ToListAsync();
-            foreach (var tvS in tvShowTitle)
+            var tvShowTitle = await _dbContext.TVShows.Select(tvSTitle => new TVShowsDetail
             {
-                if (tvS.Title is null)
-                {
-                    continue;
-                }
-                if (tvS.Title.ToLower().Contains(Title.ToLower()))
-                {
-                    tvShow.Add(new TVShowsDetail
-                    {
-                        Id = tvS.Id,
-                        Title = tvS.Title,
-                        ReleaseYear = (int)tvS.ReleaseYear,
-                        Seasons = (int)tvS.Seasons
-                    });
-                }
-            }
-            return tvShow;
+                Id = tvSTitle.Id,
+                Title = tvSTitle.Title,
+                ReleaseYear = (int)tvSTitle.ReleaseYear,
+                Seasons = (int)tvSTitle.Seasons                
+            }).ToListAsync();
+            return tvShowTitle;
         }
 
         public async Task<bool> UpdateTVShowsAsync(int tvShowsId, TVShowsUpdate update)

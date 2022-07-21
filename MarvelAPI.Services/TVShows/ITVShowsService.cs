@@ -7,7 +7,7 @@ namespace MarvelAPI.Services.TVShowsService
     {
         Task<bool> CreateTVShowsAsync(TVShowsCreate model);
         Task<IEnumerable<TVShowsListItem>> GetAllTVShowsAsync();
-        Task<TVShowsDetail> GetTVShowsByIdAsync(int Id);
+        Task<IEnumerable<TVShowsDetail>> GetTVShowsByIdAsync(int Id);
         Task<IEnumerable<TVShowsDetail>> GetTVShowsByTitleAsync(string Title);
         Task<bool> UpdateTVShowsAsync(int tvShowId, TVShowsUpdate update);
         Task<bool> DeleteTVShowsAsync(int id);
