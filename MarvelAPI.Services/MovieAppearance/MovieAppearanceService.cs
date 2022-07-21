@@ -40,22 +40,25 @@ namespace MarvelAPI.Services.MovieAppearance
         public async Task<IEnumerable<MovieAppearanceListItem>> GetAllMovieAppearancesAsync()
         {
             var movieAppearanceList = await _dbContext.MovieAppearances.ToListAsync();
-            // return movieAppearanceList;
+            var temp = new List<MovieAppearanceDetail>();
+            foreach (var mA in movieAppearanceList) {
+                temp.Add(
+                    new MovieAppearanceDetail{
+                        Id = mA.Id,
+                        MovieId = mA.MovieId,
+                        CharacterId = mA.CharacterId
+                    }
+                );
+            }
             var result = new List<MovieAppearanceListItem>();
-            foreach (var mA in movieAppearanceList) 
-            {
-                if (mA.Character is null || mA.Movie is null)
-                {
-                    continue;
-                }
-
-                result.Add(new MovieAppearanceListItem
-                {
-                    Id = mA.Id,
-                    Movie = mA.Movie.Title,
-                    Character = mA.Character.FullName
-
-                });
+            foreach (var mad in temp) {
+                result.Add(
+                    new MovieAppearanceListItem{
+                        Id = mad.Id,
+                        Character = _dbContext.Characters.FindAsync(mad.CharacterId).Result.FullName,
+                        Movie = _dbContext.Movies.FindAsync(mad.MovieId).Result.Title
+                    }
+                );
             }
             return result;
         }

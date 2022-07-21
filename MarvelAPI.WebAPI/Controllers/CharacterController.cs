@@ -48,13 +48,13 @@ namespace MarvelAPI.WebAPI.Controllers
             return Ok(result);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateCharacterAsync([FromBody] CharacterEntity model) {
+        [HttpPut("{characterId:int}")]
+        public async Task<IActionResult> UpdateCharacterAsync([FromRoute] int characterId, [FromBody] CharacterUpdate model) {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            if (await _service.UpdateCharacterAsync(model)) {
+            if (await _service.UpdateCharacterAsync(characterId, model)) {
                 return Ok("Character updated successfully.");
             }
             return BadRequest("Could not update character.");

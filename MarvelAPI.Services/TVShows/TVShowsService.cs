@@ -1,5 +1,6 @@
 using MarvelAPI.Data;
 using MarvelAPI.Data.Entities;
+using MarvelAPI.Models.TVShows;
 using Microsoft.EntityFrameworkCore;
 
 namespace MarvelAPI.Services.TVShowsService
@@ -25,23 +26,45 @@ namespace MarvelAPI.Services.TVShowsService
             return numberOfChanges == 1;
         }
 
-        public async Task<IEnumerable<TVShowsEntity>> GetAllTVShowsAsync()
+        public async Task<IEnumerable<TVShowsListItem>> GetAllTVShowsAsync()
         {
-            var tvShows = await _dbContext.TVShows
-            .ToListAsync();
-            return tvShows;
+            var tvShowList = await _dbContext.TVShows.ToListAsync();
+            var allTvShow = new List<TVShowsListItem>();
+            foreach (var tvS in tvShowList)
+            {
+                allTvShow.Add(
+                    new TVShowsListItem
+                    {
+                        Id = tvS.Id,
+                        Title = tvS.Title
+                    }
+                );
+            }
+            return allTvShow;
+        }
+        public async Task<TVShowsDetail> GetTVShowsByIdAsync(int Id)
+        {
+            var tvShow = await _dbContext.TVShows.FirstOrDefaultAsync(tvShow => tvShow.Id == Id);
+            var tvShowId = new TVShowsDetail
+            {
+                Id = tvShow.Id,
+                Title = tvShow.Title,
+                ReleaseYear = (int)tvShow.ReleaseYear,
+                Seasons = (int)tvShow.Seasons
+            };
+            return tvShowId;
         }
 
-        public async Task<bool> UpdateTVShowsAsync(TVShowsEntity request)
+        public async Task<bool> UpdateTVShowsAsync(TVShowsUpdate update)
         {
-            var tvShowsFound = await _dbContext.TVShows.FindAsync(request.Id);
+            var tvShowsFound = await _dbContext.TVShows.FindAsync(update.Id);
             if (tvShowsFound is null)
             {
                 return false;
             }
-            tvShowsFound.Title = request.Title;
-            tvShowsFound.ReleaseYear = request.ReleaseYear;
-            tvShowsFound.Seasons = request.Seasons;
+            tvShowsFound.Title = update.Title;
+            tvShowsFound.ReleaseYear = update.ReleaseYear;
+            tvShowsFound.Seasons = update.Seasons;
             var numberOfChanges = await _dbContext.SaveChangesAsync();
             return numberOfChanges == 1;
         }

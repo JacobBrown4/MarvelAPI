@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MarvelAPI.Data;
+using MarvelAPI.Models.TVShows;
 using MarvelAPI.Data.Entities;
 using MarvelAPI.Services.TVShowsService;
 
@@ -11,12 +11,10 @@ namespace MarvelAPI.WebAPI.Controllers
     public class TVShowsController : ControllerBase
     {
         private readonly ITVShowsService _service;
-        private readonly AppDbContext _dbContext;
 
-        public TVShowsController(ITVShowsService service, AppDbContext dbContext)
+        public TVShowsController(ITVShowsService service)
         {
             _service = service;
-            _dbContext = dbContext;
         }
 
         [HttpPost]
@@ -39,16 +37,15 @@ namespace MarvelAPI.WebAPI.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IEnumerable<TVShowsEntity>> GetAllTVShowsAsync()
+        public async Task<IActionResult> GetAllTVShowsAsync()
         {
-            var tvShows = await _service.GetAllTVShowsAsync();
-            return tvShows;
+            return Ok(await _service.GetAllTVShowsAsync());
         }
 
         [HttpPut("{tvShowsId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateTVShowsAsync([FromBody] TVShowsEntity model)
+        public async Task<IActionResult> UpdateTVShowsAsync([FromBody] TVShowsUpdate model)
         {
             if (!ModelState.IsValid)
             {

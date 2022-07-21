@@ -82,18 +82,18 @@ namespace MarvelAPI.Services.Character
             return result;
         }
 
-        public async Task<bool> UpdateCharacterAsync(CharacterEntity request)
+        public async Task<bool> UpdateCharacterAsync(int characterId, CharacterUpdate request)
         {
-            var characterFound = await _dbContext.Characters.FindAsync(request.Id);
+            var characterFound = await _dbContext.Characters.FindAsync(characterId);
             if (characterFound is null) {
                 return false;
             }
-            characterFound.FullName = request.FullName;
-            characterFound.Age = request.Age;
-            characterFound.Location = request.Location;
-            characterFound.Origin = request.Origin;
-            characterFound.Abilities = request.Abilities;
-            characterFound.AbilitiesOrigin = request.AbilitiesOrigin;
+            characterFound.FullName = CheckUpdateProperty(characterFound.FullName, request.FullName);
+            characterFound.Age = CheckUpdateProperty(characterFound.Age, request.Age);
+            characterFound.Location = CheckUpdateProperty(characterFound.Location, request.Location);
+            characterFound.Origin = CheckUpdateProperty(characterFound.Origin, request.Origin);
+            characterFound.Abilities = CheckUpdateProperty(characterFound.Abilities, request.Abilities);
+            characterFound.AbilitiesOrigin = CheckUpdateProperty(characterFound.AbilitiesOrigin, request.AbilitiesOrigin);
             var numOfChanges = await _dbContext.SaveChangesAsync();
             return numOfChanges == 1;
         }
@@ -112,6 +112,10 @@ namespace MarvelAPI.Services.Character
             // If there is a space/hyphen in the name, ignore it in the result to return
             var result = String.Concat(character.FullName.Split(' ', '-')).ToLower();
             return result;
+        }
+
+        private string CheckUpdateProperty(string from, string to) {
+            return String.IsNullOrEmpty(to.Trim()) ? from : to.Trim();
         }
     }
 }
