@@ -45,6 +45,42 @@ Here is an overview of the tables:
     - **Character ID** - Foreign Key to Characters table
     - **TV Show ID** - Foreign Key to TV Shows table
 
+## Requests
+Each table in the database is equipped with functionality for Creating, Reading, Updating, and Deleting (aka CRUD) rows. Details for information to include to complete requests are provided below.
+### Characters
+Create a new character:
+- Full Name
+- Age Description
+
+Get all characters:
+- No request body or route ID required
+
+Get a character:
+- ID of character
+
+Update a character:
+- ID of character
+
+*The following properties will be left unchanged if the corresponding values in the request body are sent as empty strings*
+- Full Name
+- Age
+- Location
+- Origin
+- Abilities
+- Abilities Origin
+
+Delete a character:
+- ID of character
+
+### Movies
+...
+### TV Shows
+...
+### Movie Appearances
+...
+### TV Show Appearances
+...
+
 ## Resources
 - [Postman](https://www.postman.com/)
 - [Swagger](https://swagger.io/)
