@@ -1,7 +1,4 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MarvelAPI.Data;
-using MarvelAPI.Data.Entities;
 using MarvelAPI.Services.MoviesService;
 using MarvelAPI.Models.Movies;
 
@@ -20,6 +17,8 @@ namespace MarvelAPI.WebAPI.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(MoviesCreate), 200)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateMoviesAsync([FromBody] MoviesCreate model)
         {
             if (!ModelState.IsValid)
@@ -35,6 +34,7 @@ namespace MarvelAPI.WebAPI.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<MoviesListItem>),200)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllMoviesAsync()
         {
             return Ok(await _service.GetAllMoviesAsync());
@@ -42,6 +42,8 @@ namespace MarvelAPI.WebAPI.Controllers
 
         [HttpGet("{moviesId:int}")]
         [ProducesResponseType(typeof(MoviesDetail), 200)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetMovieByIdAsync([FromRoute] int moviesId)
         {
             var movie = await _service.GetMovieByIdAsync(moviesId);
@@ -52,16 +54,19 @@ namespace MarvelAPI.WebAPI.Controllers
             return Ok(movie);
         }
 
-        [HttpGet("{movieTitle}")]
+        [HttpGet("{moviesTitle}")]
         [ProducesResponseType(typeof(MoviesDetail), 200)]
-        public async Task<IActionResult> GetMovieByTitleAsync([FromRoute] string movieTitle)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetMovieByTitleAsync([FromRoute] string moviesTitle)
         {
-            var movie = await _service.GetMovieByTitleAsync(movieTitle);
+            var movie = await _service.GetMovieByTitleAsync(moviesTitle);
             return Ok(movie);
         }
 
         [HttpPut("{moviesId:int}")]
-        // [ProducesResponseType(typeof(MoviesUpdate), 200)]
+        [ProducesResponseType(typeof(MoviesUpdate), 200)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateMoviesAsync([FromRoute] int moviesId, [FromBody] MoviesUpdate request)
         {
             if (!ModelState.IsValid)
@@ -77,6 +82,7 @@ namespace MarvelAPI.WebAPI.Controllers
 
         [HttpDelete("{moviesId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteMoviesAsync([FromRoute] int moviesId)
         {
             return await _service.DeleteMoviesAsync(moviesId) ?

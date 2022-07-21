@@ -35,82 +35,56 @@ namespace MarvelAPI.Services.MoviesService
 
         public async Task<IEnumerable<MoviesListItem>> GetAllMoviesAsync()
         {
-            var movieList = await _dbContext.Movies.ToListAsync();
-            var result = new List<MoviesListItem>();
-            foreach (var m in movieList)
+            var movieList = await _dbContext.Movies.Select(m => new MoviesListItem
             {
-                result.Add
-                (
-                    new MoviesListItem
-                    {
-                        Id = m.Id,
-                        Title = m.Title
-                    }
-                );
-            }
-            return result;
+                Id = m.Id,
+                Title = m.Title
+            }).ToListAsync();
+            return movieList;
         }
 
-        public async Task<MoviesDetail> GetMovieByIdAsync(int moviesId)
+        public async Task<IEnumerable<MoviesDetail>> GetMovieByIdAsync(int moviesId)
         {
-            var movie = await _dbContext.Movies.FirstOrDefaultAsync(movie => movie.Id == moviesId);
-            var result = new MoviesDetail
+            var movieId = await _dbContext.Movies.Select(mL => new MoviesDetail
             {
-                Id = movie.Id,
-                Title = movie.Title,
-                ReleaseYear = (int)movie.ReleaseYear
-            };
-            return result;
+                Id = mL.Id,
+                Title = mL.Title,
+                ReleaseYear = (int)mL.ReleaseYear
+            }).ToListAsync();
+            return movieId;
         }
 
-        public async Task<IEnumerable<MoviesDetail>> GetMovieByTitleAsync(string movieTitle)
+        public async Task<IEnumerable<MoviesDetail>> GetMovieByTitleAsync(string moviesTitle)
         {
-            var result = new List<MoviesDetail>();
-            var currentMovie = await _dbContext.Movies.ToListAsync();
-            foreach (var m in currentMovie)
+            var movieTitle = await _dbContext.Movies.Select(mT => new MoviesDetail
             {
-                if (m.Title is null)
-                {
-                    continue;
-                }
-                if (m.Title.ToLower().Contains(movieTitle.ToLower()))
-                {
-                    result.Add
-                    (
-                        new MoviesDetail
-                        {
-                            Id = m.Id,
-                            Title = m.Title,
-                            ReleaseYear = (int)m.ReleaseYear
-                        }
-                    );
-                }
-            }
-            return result;
+                Id = mT.Id,
+                Title = mT.Title,
+                ReleaseYear = (int)mT.ReleaseYear
+            }).ToListAsync();
+            return movieTitle;
         }
 
-        public async Task<bool> UpdateMoviesAsync(int moviesId, MoviesUpdate request)
+        public async Task<bool> UpdateMoviesAsync(int moviesId, MoviesUpdate update)
         {
             var moviesFound = await _dbContext.Movies.FindAsync(moviesId);
             if (moviesFound is null)
             {
                 return false;
             }
-
-            var movie = new MoviesEntity
+            var moviesUpdate = new MoviesEntity
             {
-                Title = request.Title
+                Title = update.Title
             };
-
             foreach (var m in await _dbContext.Movies.ToListAsync())
             {
-                if (ReformatTitle(m) == ReformatTitle(movie))
+                if (ReformatTitle(m) == ReformatTitle(moviesUpdate))
                 {
                     return false;
                 }
             }
-            moviesFound.Title = request.Title;
-            moviesFound.ReleaseYear = request.ReleaseYear;
+            moviesFound.Title = update.Title;
+            moviesFound.ReleaseYear = update.ReleaseYear;
             var numberOfChanges = await _dbContext.SaveChangesAsync();
             return numberOfChanges == 1;
         }
@@ -122,13 +96,13 @@ namespace MarvelAPI.Services.MoviesService
             return await _dbContext.SaveChangesAsync() == 1;
         }
 
-        private string ReformatTitle(MoviesEntity movie) {
-            // Returns a reformatted version of a MoviesEntity's Title,
-            // to be more easily compared against others formatted the same way.
-
-            // If there is a space/hyphen in the name, ignore it in the result to return
+        private string ReformatTitle(MoviesEntity movie) 
+        {
             var result = String.Concat(movie.Title.Split(' ', '-')).ToLower();
             return result;
+        }
+        private string CheckUpdateProperty(string from, string to) {
+            return String.IsNullOrEmpty(to.Trim()) ? from : to.Trim();
         }
     }
 }

@@ -1,3 +1,4 @@
+using MarvelAPI.Models.Characters;
 namespace MarvelAPI.Models.TVShows
 {
     public class TVShowsDetail
@@ -6,5 +7,6 @@ namespace MarvelAPI.Models.TVShows
         public string Title { get; set; }
         public int ReleaseYear { get; set; }
         public int Seasons { get; set; }
+        public List<CharacterListItem> Characters { get; set; }
     }
 }

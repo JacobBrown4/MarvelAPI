@@ -1,4 +1,4 @@
-// TODO Add usings
+using MarvelAPI.Models.Characters;
 
 namespace MarvelAPI.Models.Movies
 {
@@ -7,7 +7,6 @@ namespace MarvelAPI.Models.Movies
         public int Id { get; set; }   
         public string Title { get; set; }
         public int ReleaseYear { get; set; }
-        // add character list
-        // use display models not data
+        public List<CharacterListItem> Characters { get; set; }
     }
 }
