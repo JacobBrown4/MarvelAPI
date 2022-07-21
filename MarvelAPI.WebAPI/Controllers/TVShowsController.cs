@@ -1,7 +1,5 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MarvelAPI.Models.TVShows;
-using MarvelAPI.Data.Entities;
 using MarvelAPI.Services.TVShowsService;
 
 namespace MarvelAPI.WebAPI.Controllers
