@@ -1,6 +1,10 @@
 using MarvelAPI.Data;
 using MarvelAPI.Data.Entities;
 using MarvelAPI.Models.Characters;
+using MarvelAPI.Models.MovieAppearance;
+using MarvelAPI.Models.Movies;
+using MarvelAPI.Models.TVShowAppearance;
+using MarvelAPI.Models.TVShows;
 using Microsoft.EntityFrameworkCore;
 
 namespace MarvelAPI.Services.Character
@@ -60,15 +64,53 @@ namespace MarvelAPI.Services.Character
 
         public async Task<CharacterDetail> GetCharacterByIdAsync(int id)
         {
-            var character = await _dbContext.Characters.FirstOrDefaultAsync(character => character.Id == id);
+            var characterFound = await _dbContext.Characters.FindAsync(id);
+            var characterMovies = await _dbContext.MovieAppearances
+                .Select(
+                    ma => new MovieAppearanceDetail{
+                        Id = ma.Id,
+                        Character = ma.Character.FullName,
+                        Movie = ma.Movie.Title
+                })
+                .Where(
+                    o => o.Character == characterFound.FullName
+                )
+                .Select(
+                    mad => new MoviesListItem{
+                        Id = mad.Id,
+                        Title = mad.Movie
+                    }
+                )
+                .ToListAsync();
+            
+            var characterTVShows = await _dbContext.TVShowAppearance
+                .Select(
+                    tvsa => new TVShowAppearanceDetail{
+                        Id = tvsa.Id,
+                        TVShowId = tvsa.TVShowId,
+                        CharacterId = tvsa.CharacterId
+                })
+                .Where(
+                    o => o.CharacterId == characterFound.Id
+                )
+                .Select(
+                    tvsad => new TVShowsListItem{
+                        Id = tvsad.Id,
+                        Title = tvsad.TVShow
+                    }
+                )
+                .ToListAsync();
+            
             var result = new CharacterDetail{
-                Id = character.Id,
-                FullName = character.FullName,
-                Age = character.Age,
-                Location = character.Location,
-                Origin = character.Origin,
-                Abilities = character.Abilities,
-                AbilitiesOrigin = character.AbilitiesOrigin
+                Id = characterFound.Id,
+                FullName = characterFound.FullName,
+                Age = characterFound.Age,
+                Location = characterFound.Location,
+                Origin = characterFound.Origin,
+                Abilities = characterFound.Abilities,
+                AbilitiesOrigin = characterFound.AbilitiesOrigin,
+                Movies = characterMovies,
+                TVShows = characterTVShows
             };
             return result;
         }
