@@ -1,3 +1,6 @@
+using MarvelAPI.Models.Movies;
+using MarvelAPI.Models.TVShows;
+
 namespace MarvelAPI.Models.Characters
 {
     public class CharacterDetail
@@ -11,7 +14,7 @@ namespace MarvelAPI.Models.Characters
         public string Origin { get; set; }
         public string Abilities { get; set; }
         public string AbilitiesOrigin { get; set; }
-        // add list of movie list objects
-        // use display models not data
+        public List<MoviesListItem> Movies {get; set;}
+        public List<TVShowsListItem> TVShows {get; set;}
     }
 }

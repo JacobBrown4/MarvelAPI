@@ -32,38 +32,29 @@ namespace MarvelAPI.Services.Character
 
         public async Task<IEnumerable<CharacterListItem>> GetAllCharactersAsync()
         {
-            var characterList = await _dbContext.Characters.ToListAsync();
-            var result = new List<CharacterListItem>();
-            foreach ( var c in characterList) {
-                result.Add(
-                    new CharacterListItem{
+            var result = await _dbContext.Characters
+                .Select(
+                    c => new CharacterListItem{
                         Id = c.Id,
                         FullName = c.FullName
-                    }
-                );
-            }
+                })
+                .ToListAsync();
             return result;
         }
 
         public async Task<IEnumerable<CharacterAbilities>> GetCharactersByAbilityAsync(string ability) {
-            var result = new List<CharacterAbilities>();
-            // Getting most up-to-date list of characters
-            var currentCharacters = await _dbContext.Characters.ToListAsync();
-            foreach (var c in currentCharacters) {
-                if (c.Abilities is null) {
-                    // Skip characters with null Abilities
-                    continue;
-                }
-                if (c.Abilities.ToLower().Contains(ability.ToLower())) {
-                    result.Add(
-                        new CharacterAbilities{
-                            Id = c.Id,
-                            FullName = c.FullName,
-                            Abilities = c.Abilities
-                        }
-                    );
-                }
-            }
+            var result = await _dbContext.Characters
+                .Select(
+                    c => new CharacterAbilities{
+                        Id = c.Id,
+                        FullName = c.FullName,
+                        Abilities = c.Abilities
+                })
+                .Where(
+                    o => o.Abilities != null && 
+                    o.Abilities.ToLower().Contains(ability.ToLower())
+                )
+                .ToListAsync();
             return result;
         }
 
