@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+
 namespace MarvelAPI.Models.MovieAppearance
 {
     public class MovieAppearanceUpdate
@@ -8,6 +9,5 @@ namespace MarvelAPI.Models.MovieAppearance
 
         [Required]
         public int MovieId { get; set; }
-
     }
 }

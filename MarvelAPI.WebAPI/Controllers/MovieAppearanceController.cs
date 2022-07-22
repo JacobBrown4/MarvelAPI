@@ -15,6 +15,8 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateMovieAppearanceAsync([FromBody] MovieAppearanceCreate model)
         {
             if (!ModelState.IsValid)
@@ -24,18 +26,20 @@ namespace MarvelAPI.WebAPI.Controllers
 
             if (await _service.CreateMovieAppearanceAsync(model)) 
             {
-                return Ok("The movie appearance was created and added to the database successfully.");
+                return Ok("The movie appearance has been created and added to the database successfully.");
             }
             return BadRequest("Sorry, the movie appearance could not be created.");
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<MovieAppearanceListItem>),200)]
         public async Task<IActionResult> GetAllMovieAppearancesAsync()
         {
             return Ok(await _service.GetAllMovieAppearancesAsync());
         }
 
         [HttpGet("{movieAppearanceId:int}")]
+        [ProducesResponseType(typeof(MovieAppearanceDetail),200)]
         public async Task<IActionResult> GetMovieAppearanceByIdAsync([FromRoute] int movieAppearanceId)
         {
             var movieAppearance = await _service.GetMovieAppearanceByIdAsync(movieAppearanceId);
@@ -47,20 +51,24 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpPut("{movieAppearanceId:int}")]
-        public async Task<IActionResult> UpdateMovieAppearanceAsync([FromRoute] int movieAppearanceId,[FromBody] MovieAppearanceUpdate model)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateMovieAppearanceAsync([FromRoute] int movieAppearanceId, [FromBody] MovieAppearanceUpdate request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            if (await _service.UpdateMovieAppearanceAsync(movieAppearanceId, model))
+            if (await _service.UpdateMovieAppearanceAsync(movieAppearanceId, request))
             {
                 return Ok("The movie appearance has been updated successfully.");
             }
-            return BadRequest("Sorry, the movie appearnce could be updated.");
+            return BadRequest("Sorry, the movie appearnce could not be updated.");
         }
 
         [HttpDelete("{movieAppearanceId:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteMovieAppearanceAsync([FromRoute] int movieAppearanceId)
         {
             return await _service.DeleteMovieAppearanceAsync(movieAppearanceId) ? Ok($"The movie appearance with ID {movieAppearanceId} was deleted successfully.") : BadRequest($"Sorry, the movie appearance with ID {movieAppearanceId} could not be deleted.");

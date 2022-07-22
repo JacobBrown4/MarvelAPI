@@ -36,7 +36,7 @@ namespace MarvelAPI.Services.MovieAppearance
                 {
                     Id = x.Id,
                     Character = x.Character.FullName,
-                    Movie = x.Movie.Title,
+                    Movie = x.Movie.Title
                 }
             )
             .ToListAsync();
