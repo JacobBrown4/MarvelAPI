@@ -62,6 +62,23 @@ namespace MarvelAPI.Services.Character
             return result;
         }
 
+        public async Task<IEnumerable<CharacterAliases>> GetCharactersByAliasesAsync(string aliases) {
+            var result = await _dbContext.Characters
+                .Select(
+                    c => new CharacterAliases{
+                        Id = c.Id,
+                        FullName = c.FullName,
+                        Aliases = c.Aliases
+                    }
+                )
+                .Where(
+                    o => o.Aliases != null && 
+                    o.Aliases.ToLower().Contains(aliases.ToLower())
+                )
+                .ToListAsync();
+            return result;
+        }
+
         public async Task<CharacterDetail> GetCharacterByIdAsync(int id)
         {
             var characterFound = await _dbContext.Characters.FindAsync(id);

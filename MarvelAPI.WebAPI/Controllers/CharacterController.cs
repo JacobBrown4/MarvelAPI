@@ -42,9 +42,15 @@ namespace MarvelAPI.WebAPI.Controllers
             return Ok(character);
         }
 
-        [HttpGet("{ability}")]
+        [HttpGet("Abilities/{ability}")]
         public async Task<IActionResult> GetCharactersByAbilityAsync([FromRoute] string ability) {
             var result = await _service.GetCharactersByAbilityAsync(ability);
+            return Ok(result);
+        }
+
+        [HttpGet("Aliases/{aliases}")]
+        public async Task<IActionResult> GetCharactersByAliasesAsync([FromRoute] string aliases) {
+            var result = await _service.GetCharactersByAliasesAsync(aliases);
             return Ok(result);
         }
 
