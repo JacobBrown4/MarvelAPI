@@ -1,7 +1,7 @@
 using MarvelAPI.Models.Characters;
 namespace MarvelAPI.Models.TVShows
 {
-    public class TVShowsDetail
+    public class TVShowDetail
     {
         public int Id { get; set; }   
         public string Title { get; set; }

@@ -1,6 +1,6 @@
 namespace MarvelAPI.Models.TVShows
 {
-    public class TVShowsListItem
+    public class TVShowListItem
     {
         public int Id { get; set; }
 
