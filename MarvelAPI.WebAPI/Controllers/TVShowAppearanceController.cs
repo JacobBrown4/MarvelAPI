@@ -1,7 +1,7 @@
-using MarvelAPI.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using MarvelAPI.Models.TVShowAppearance;
 using MarvelAPI.Services.TVShowAppearance;
+
 namespace MarvelAPI.WebAPI.Controllers
 {
     [Route("api/[controller]")]

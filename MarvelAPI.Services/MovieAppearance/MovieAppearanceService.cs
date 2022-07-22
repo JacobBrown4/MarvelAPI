@@ -63,7 +63,7 @@ namespace MarvelAPI.Services.MovieAppearance
             .FirstOrDefaultAsync();
             return movieAppearance;
         }
-
+        // Add get by name?
         // * PUT
         public async Task<bool> UpdateMovieAppearanceAsync(int movieAppearanceId, MovieAppearanceUpdate request)
         {
