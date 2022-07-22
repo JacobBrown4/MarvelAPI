@@ -94,7 +94,7 @@ namespace MarvelAPI.Services.Character
                     o => o.CharacterId == characterFound.Id
                 )
                 .Select(
-                    tvsad => new TVShowsListItem{
+                    tvsad => new TVShowListItem{
                         Id = tvsad.Id,
                         Title = tvsad.TVShow
                     }

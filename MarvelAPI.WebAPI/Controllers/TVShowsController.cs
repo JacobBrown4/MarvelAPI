@@ -16,85 +16,94 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(TVShowsCreate), 200)]
+        // ! Probably do not need this annotation
+        // ! Our response is in the return Ok
+        // [ProducesResponseType(typeof(TVShowCreate), 200)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateMoviesAsync([FromBody] TVShowsCreate model)
+        public async Task<IActionResult> CreateTvShowAsync([FromBody] TVShowCreate model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var createTVShows = await _service.CreateTVShowsAsync(model);
-            if (createTVShows)
+            if (await _service.CreateTVShowAsync(model))
             {
-                return Ok("TV Show was created and added to Database.");
+                return Ok("The TV show has been created and added to Database.");
             }
-            return BadRequest("TV Show could not be added to Database.");
+            return BadRequest("Sorry, the TV show could not be created.");
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<TVShowsListItem>), 200)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<TVShowListItem>), 200)]
+        // ! Not sure if we need this annotation, we are already showing a 
+        // ! 200 response in the annotation above
+        // [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllTVShowsAsync()
         {
             return Ok(await _service.GetAllTVShowsAsync());
         }
 
-        [HttpGet("{Id:int}")]
-        [ProducesResponseType(typeof(TVShowsDetail), 200)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpGet("{tvShowId:int}")]
+        [ProducesResponseType(typeof(TVShowDetail), 200)]
+        // ! Not sure if we need this annotation, we are already showing a 
+        // ! 200 response in the annotation above
+        // [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetTVShowsByIdAsync([FromRoute] int Id)
+        public async Task<IActionResult> GetTVShowByIdAsync([FromRoute] int tvShowId)
         {
-            var tvShowId = await _service.GetTVShowsByIdAsync(Id);
-            if (tvShowId == default)
+            var tvShow = await _service.GetTVShowByIdAsync(tvShowId);
+            if (tvShow == default)
             {
-                return NotFound("Could not find TV Show.");
+                return NotFound("Sorry, the TV show could not be found.");
             }
-            return Ok(tvShowId);
+            return Ok(tvShow);
         }
 
         [HttpGet("{tvShowTitle}")]
-        [ProducesResponseType(typeof(TVShowsDetail), 200)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(TVShowDetail), 200)]
+        // ! Not sure if we need this annotation, we are already showing a 
+        // ! 200 response in the annotation above
+        // [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetTVShowsByTitleAsync([FromRoute] string Title)
+        public async Task<IActionResult> GetTVShowByTitleAsync([FromRoute] string tvShowTitle)
         {
-            var tvShowTitle = await _service.GetTVShowsByTitleAsync(Title);
-            if (tvShowTitle == default)
+            var tvShow = await _service.GetTVShowByTitleAsync(tvShowTitle);
+            if (tvShow == default)
             {
-                return NotFound("Could not find TV Show.");
+                return NotFound("Sorry, the TV show could not be found.");
             }
-            return Ok(tvShowTitle);
+            return Ok(tvShow);
         }
 
 
-        [HttpPut("{tvShowsId:int}")]
-        [ProducesResponseType(typeof(TVShowsDetail), 200)]
+        [HttpPut("{tvShowId:int}")]
+        // ! Probably do not need this annotation
+        // ! Our response is in the return Ok
+        // [ProducesResponseType(typeof(TVShowDetail), 200)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateTVShowsAsync([FromRoute] int tvShowId, [FromBody] TVShowsUpdate update)
+        public async Task<IActionResult> UpdateTVShowAsync([FromRoute] int tvShowId, [FromBody] TVShowUpdate request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest (ModelState);
             }
-            if (await _service.UpdateTVShowsAsync(tvShowId, update))
+            if (await _service.UpdateTVShowAsync(tvShowId, request))
             {
-                return Ok("TV Show was updated successfully.");
+                return Ok("The TV show has been updated successfully.");
             }
-            return BadRequest("Could not update TV Show.");
+            return BadRequest("Sorry, the TV show could not be updated.");
         }
 
-        [HttpDelete("{tvShowsId:int}")]
+        [HttpDelete("{tvShowId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteTVShowsAsync([FromRoute] int tvShowsId)
+        public async Task<IActionResult> DeleteTVShowAsync([FromRoute] int tvShowId)
         {
-            return await _service.DeleteTVShowsAsync(tvShowsId) ?
-            Ok($"The TV Show {tvShowsId} was successfully deleted."):
-            BadRequest($"The TV Show {tvShowsId} could not be deleted.");
+            return await _service.DeleteTVShowAsync(tvShowId) ?
+            Ok($"The TV show with ID {tvShowId} was deleted successfully."):
+            BadRequest($"Sorry, the TV show with ID {tvShowId} could not be deleted.");
         }
     }
 }
