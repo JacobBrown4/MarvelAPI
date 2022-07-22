@@ -2,6 +2,7 @@ using MarvelAPI.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using MarvelAPI.Models.TVShowAppearance;
 using MarvelAPI.Services.TVShowAppearance;
+
 namespace MarvelAPI.WebAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -29,7 +30,7 @@ namespace MarvelAPI.WebAPI.Controllers
             {
                 return Ok("TV Show Appearance was added to Database.");
             }
-            return BadRequest("TV Show Appearance was not added to the Database.");
+            return BadRequest("TV Show Appearance could not be added to the Database.");
         }
 
         [HttpGet]

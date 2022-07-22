@@ -1,13 +1,6 @@
-using System.Net.NetworkInformation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MarvelAPI.Data;
 using MarvelAPI.Data.Entities;
 using MarvelAPI.Models.MovieAppearance;
 using MarvelAPI.Services.MovieAppearance;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MarvelAPI.WebAPI.Controllers

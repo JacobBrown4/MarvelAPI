@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using MarvelAPI.Data;
 using MarvelAPI.Data.Entities;
 using MarvelAPI.Models.MovieAppearance;
@@ -52,7 +50,7 @@ namespace MarvelAPI.Services.MovieAppearance
                 CharacterId = movieAppearanceEntity.CharacterId
             };
         }
-
+        // Add get by name?
         // * PUT
         public async Task<bool> UpdateMovieAppearanceAsync(MovieAppearanceDetail request)
         {
