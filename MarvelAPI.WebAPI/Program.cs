@@ -17,8 +17,8 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(conn
 // Add Services/Interfaces for Dependency Injection here
 builder.Services.AddScoped<IMovieAppearanceService, MovieAppearanceService>();
 builder.Services.AddScoped<ICharacterService, CharacterService>();
-builder.Services.AddScoped<IMoviesService, MoviesService>();
-builder.Services.AddScoped<ITVShowsService, TVShowsService>();
+builder.Services.AddScoped<IMovieService, MovieService>();
+builder.Services.AddScoped<ITVShowService, TVShowService>();
 builder.Services.AddScoped<ITVShowAppearanceService, TVShowAppearanceService>();
 
 // Add services to the container.

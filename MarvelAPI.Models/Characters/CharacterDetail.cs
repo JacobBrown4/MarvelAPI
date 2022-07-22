@@ -14,7 +14,7 @@ namespace MarvelAPI.Models.Characters
         public string Origin { get; set; }
         public string Abilities { get; set; }
         public string AbilitiesOrigin { get; set; }
-        public List<MoviesListItem> Movies {get; set;}
+        public List<MovieListItem> Movies {get; set;}
         public List<TVShowListItem> TVShows {get; set;}
     }
 }

@@ -76,7 +76,7 @@ namespace MarvelAPI.Services.Character
                     o => o.Character == characterFound.FullName
                 )
                 .Select(
-                    mad => new MoviesListItem{
+                    mad => new MovieListItem{
                         Id = mad.Id,
                         Title = mad.Movie
                     }
