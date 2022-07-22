@@ -70,14 +70,16 @@ namespace MarvelAPI.Services.Character
                     ma => new MovieAppearanceDetail{
                         Id = ma.Id,
                         Character = ma.Character.FullName,
-                        Movie = ma.Movie.Title
+                        CharacterId = ma.CharacterId,
+                        Movie = ma.Movie.Title,
+                        MovieId = ma.MovieId
                 })
                 .Where(
                     o => o.Character == characterFound.FullName
                 )
                 .Select(
                     mad => new MovieListItem{
-                        Id = mad.Id,
+                        Id = mad.MovieId,
                         Title = mad.Movie
                     }
                 )
@@ -88,14 +90,16 @@ namespace MarvelAPI.Services.Character
                     tvsa => new TVShowAppearanceDetail{
                         Id = tvsa.Id,
                         TVShowId = tvsa.TVShowId,
-                        CharacterId = tvsa.CharacterId
+                        CharacterId = tvsa.CharacterId,
+                        TVShow = tvsa.TVShow.Title,
+                        Character = tvsa.Character.FullName
                 })
                 .Where(
                     o => o.CharacterId == characterFound.Id
                 )
                 .Select(
                     tvsad => new TVShowListItem{
-                        Id = tvsad.Id,
+                        Id = tvsad.TVShowId,
                         Title = tvsad.TVShow
                     }
                 )
