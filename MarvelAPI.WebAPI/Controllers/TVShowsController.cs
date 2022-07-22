@@ -1,75 +1,109 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MarvelAPI.Data;
-using MarvelAPI.Data.Entities;
+using MarvelAPI.Models.TVShows;
 using MarvelAPI.Services.TVShowsService;
 
 namespace MarvelAPI.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TVShowsController : ControllerBase
+    public class TVShowController : ControllerBase
     {
-        private readonly ITVShowsService _service;
-        private readonly AppDbContext _dbContext;
+        private readonly ITVShowService _service;
 
-        public TVShowsController(ITVShowsService service, AppDbContext dbContext)
+        public TVShowController(ITVShowService service)
         {
             _service = service;
-            _dbContext = dbContext;
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        // ! Probably do not need this annotation
+        // ! Our response is in the return Ok
+        // [ProducesResponseType(typeof(TVShowCreate), 200)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateMoviesAsync([FromBody] TVShowsEntity model)
+        public async Task<IActionResult> CreateTvShowAsync([FromBody] TVShowCreate model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var createTVShows = await _service.CreateTVShowsAsync(model);
-            if (createTVShows)
+            if (await _service.CreateTVShowAsync(model))
             {
-                return Ok("TV Show was added to Database.");
+                return Ok("The TV show has been created and added to Database.");
             }
-            return BadRequest("TV Show could not be added to Database.");
+            return BadRequest("Sorry, the TV show could not be created.");
         }
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IEnumerable<TVShowsEntity>> GetAllTVShowsAsync()
+        [ProducesResponseType(typeof(IEnumerable<TVShowListItem>), 200)]
+        // ! Not sure if we need this annotation, we are already showing a 
+        // ! 200 response in the annotation above
+        // [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllTVShowsAsync()
         {
-            var tvShows = await _service.GetAllTVShowsAsync();
-            return tvShows;
+            return Ok(await _service.GetAllTVShowsAsync());
         }
 
-        [HttpPut("{tvShowsId:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpGet("{tvShowId:int}")]
+        [ProducesResponseType(typeof(TVShowDetail), 200)]
+        // ! Not sure if we need this annotation, we are already showing a 
+        // ! 200 response in the annotation above
+        // [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateTVShowsAsync([FromRoute] int Id)
+        public async Task<IActionResult> GetTVShowByIdAsync([FromRoute] int tvShowId)
         {
-            var requestTVShows = await _dbContext.TVShows.FindAsync(Id);
-            var updatedTVShows = await _service.UpdateTVShowsAsync(requestTVShows);
-            if (updatedTVShows is false)
+            var tvShow = await _service.GetTVShowByIdAsync(tvShowId);
+            if (tvShow == default)
             {
-                return NotFound();
+                return NotFound("Sorry, the TV show could not be found.");
             }
-            return Ok(updatedTVShows);
+            return Ok(tvShow);
         }
 
-        [HttpDelete("{tvShowsId:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpGet("{tvShowTitle}")]
+        [ProducesResponseType(typeof(TVShowDetail), 200)]
+        // ! Not sure if we need this annotation, we are already showing a 
+        // ! 200 response in the annotation above
+        // [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteTVShowsAsync([FromRoute] int Id)
+        public async Task<IActionResult> GetTVShowByTitleAsync([FromRoute] string tvShowTitle)
         {
-            var tvShowsToDelete = await _service.DeleteTVShowsAsync(Id);
-            if (tvShowsToDelete is false)
+            var tvShow = await _service.GetTVShowByTitleAsync(tvShowTitle);
+            if (tvShow == default)
             {
-                return NotFound();
+                return NotFound("Sorry, the TV show could not be found.");
             }
-            return Ok(tvShowsToDelete);
+            return Ok(tvShow);
+        }
+
+
+        [HttpPut("{tvShowId:int}")]
+        // ! Probably do not need this annotation
+        // ! Our response is in the return Ok
+        // [ProducesResponseType(typeof(TVShowDetail), 200)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateTVShowAsync([FromRoute] int tvShowId, [FromBody] TVShowUpdate request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest (ModelState);
+            }
+            if (await _service.UpdateTVShowAsync(tvShowId, request))
+            {
+                return Ok("The TV show has been updated successfully.");
+            }
+            return BadRequest("Sorry, the TV show could not be updated.");
+        }
+
+        [HttpDelete("{tvShowId:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteTVShowAsync([FromRoute] int tvShowId)
+        {
+            return await _service.DeleteTVShowAsync(tvShowId) ?
+            Ok($"The TV show with ID {tvShowId} was deleted successfully."):
+            BadRequest($"Sorry, the TV show with ID {tvShowId} could not be deleted.");
         }
     }
 }

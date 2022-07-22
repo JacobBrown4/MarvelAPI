@@ -21,6 +21,7 @@ namespace MarvelAPI.WebAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
+
             if (await _service.CreateCharacterAsync(model)) {
                 return Ok("Character created successfully.");
             }
@@ -32,8 +33,8 @@ namespace MarvelAPI.WebAPI.Controllers
             return Ok(await _service.GetAllCharactersAsync());
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetCharacterByIdAsync([FromBody] int characterId) {
+        [HttpGet("{characterId:int}")]
+        public async Task<IActionResult> GetCharacterByIdAsync([FromRoute] int characterId) {
             var character = await _service.GetCharacterByIdAsync(characterId);
             if (character == default) {
                 return NotFound();
@@ -41,13 +42,19 @@ namespace MarvelAPI.WebAPI.Controllers
             return Ok(character);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateCharacterAsync([FromBody] CharacterEntity model) {
+        [HttpGet("{ability}")]
+        public async Task<IActionResult> GetCharactersByAbilityAsync([FromRoute] string ability) {
+            var result = await _service.GetCharactersByAbilityAsync(ability);
+            return Ok(result);
+        }
+
+        [HttpPut("{characterId:int}")]
+        public async Task<IActionResult> UpdateCharacterAsync([FromRoute] int characterId, [FromBody] CharacterUpdate model) {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            if (await _service.UpdateCharacterAsync(model)) {
+            if (await _service.UpdateCharacterAsync(characterId, model)) {
                 return Ok("Character updated successfully.");
             }
             return BadRequest("Could not update character.");

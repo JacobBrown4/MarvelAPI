@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace MarvelAPI.Models.TVShows
+namespace MarvelAPI.Models.Movies
 {
-    public class TVShowCreate
-    {
+    public class MovieUpdate
+    {        
         [Required]
         [MinLength(1, ErrorMessage = "{0} must be at least {1} characters long.")]
         [MaxLength(150, ErrorMessage = "{0} must be no more than {1} characters long.")]
@@ -11,8 +11,5 @@ namespace MarvelAPI.Models.TVShows
 
         [Required]
         public int ReleaseYear { get; set; }
-
-        [Required]
-        public int Seasons { get; set; }
     }
 }

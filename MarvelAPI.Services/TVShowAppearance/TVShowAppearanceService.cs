@@ -12,59 +12,73 @@ namespace MarvelAPI.Services.TVShowAppearance
         {
             _dbContext = dbContext;
         }
-        public async Task<bool> CreateTVShowAppearanceAsync(TVShowAppearanceCreate request)
+        public async Task<bool> CreateTVShowAppearanceAsync(TVShowAppearanceCreate model)
         {
-            var entity = new TVShowAppearanceEntity
+            var tvShowAppearance = new TVShowAppearanceEntity
             {
-                CharacterId = request.CharacterId,
-                TVShowId = request.TVShowId
+                CharacterId = model.CharacterId,
+                TVShowId = model.TVShowId
             };
 
-            _dbContext.TVShowAppearance.Add(entity);
-
+            _dbContext.TVShowAppearance.Add(tvShowAppearance);
             var numberOfChanges = await _dbContext.SaveChangesAsync();
-
             return numberOfChanges == 1;
         }
 
-        public async Task<IEnumerable<TVShowAppearanceEntity>> GetAllTVShowAppearanceAsync()
+        public async Task<IEnumerable<TVShowAppearanceListItem>> GetAllTVShowAppearancesAsync()
         {
             var tvShowAppearance = await _dbContext.TVShowAppearance
-
+            .Select(
+                x => new TVShowAppearanceListItem
+                {
+                    Id = x.Id,
+                    Character = x.Character.FullName,
+                    TVShow = x.TVShow.Title
+                }
+            )
             .ToListAsync();
-
             return tvShowAppearance;
         }
 
-        public async Task<TVShowAppearanceDetail> GetTVShowAppearanceDetailByIdAsync(int Id)
+        public async Task<TVShowAppearanceDetail> GetTVShowAppearanceByIdAsync(int tvShowAppearanceId)
         {
-            var tvShowAppearanceEntity = await _dbContext.TVShowAppearance.FirstOrDefaultAsync(e => e.Id == Id);
-
-            return tvShowAppearanceEntity is null ? null : new TVShowAppearanceDetail
-            {
-                Id = tvShowAppearanceEntity.Id,
-                TVShowId = tvShowAppearanceEntity.TVShowId,
-                CharacterId = tvShowAppearanceEntity.CharacterId
-            };
+            var tvShowAppearance = await _dbContext.TVShowAppearance
+            .Select(
+                x => new TVShowAppearanceDetail
+                {
+                    Id = x.Id,
+                    CharacterId = x.CharacterId,
+                    Character = x.Character.FullName,
+                    TVShowId = x.TVShowId,
+                    TVShow = x.TVShow.Title
+                }
+            )
+            .Where(
+                x => x.Id == tvShowAppearanceId
+            )
+            .FirstOrDefaultAsync();
+            return tvShowAppearance;
         }
 
-        public async Task<bool> UpdateTVShowAppearanceAsync(TVShowAppearanceDetail request)
+        public async Task<bool> UpdateTVShowAppearanceAsync(int tvShowAppearanceId, TVShowAppearanceUpdate request)
         {
-            var tvShowAppearanceEntity = await _dbContext.TVShowAppearance.FindAsync(request.Id);
-            tvShowAppearanceEntity.CharacterId = request.CharacterId;
-            tvShowAppearanceEntity.TVShowId = request.TVShowId;
+            var tvShowAppearance = await _dbContext.TVShowAppearance.FindAsync(tvShowAppearanceId);
+
+            if (tvShowAppearance is null)
+            {
+                return false;
+            }
+            tvShowAppearance.CharacterId = request.CharacterId;
+            tvShowAppearance.TVShowId = request.TVShowId;
 
             var numberOfChanges = await _dbContext.SaveChangesAsync();
-
             return numberOfChanges == 1;
         }
 
-        public async Task<bool> DeleteTVShowAppearanceAsync(int id)
+        public async Task<bool> DeleteTVShowAppearanceAsync(int tvShowAppearanceId)
         {
-            var tvShowAppearanceEntity = await _dbContext.TVShowAppearance.FindAsync(id);
-
-            _dbContext.TVShowAppearance.Remove(tvShowAppearanceEntity);
-
+            var tvShowAppearance = await _dbContext.TVShowAppearance.FindAsync(tvShowAppearanceId);
+            _dbContext.TVShowAppearance.Remove(tvShowAppearance);
             return await _dbContext.SaveChangesAsync() == 1;
         }
     }

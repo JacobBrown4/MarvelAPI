@@ -9,6 +9,6 @@ namespace MarvelAPI.Data.Entities
         [Required]
         public string Title { get; set; }
 
-        public DateTime? ReleaseYear { get; set; }
+        public int? ReleaseYear { get; set; }
     }
 }

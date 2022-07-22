@@ -16,6 +16,8 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateMovieAppearanceAsync([FromBody] MovieAppearanceCreate model)
         {
             if (!ModelState.IsValid)
@@ -23,48 +25,54 @@ namespace MarvelAPI.WebAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            var createMovieAppearance = await _service.CreateMovieAppearanceAsync(model);
-
-            if (createMovieAppearance)
+            if (await _service.CreateMovieAppearanceAsync(model)) 
             {
-                return Ok("Move Appearance was added to the databse.");
+                return Ok("The movie appearance has been created and added to the database successfully.");
             }
-            return BadRequest("Movie Appearance could not be added to the database.");
+            return BadRequest("Sorry, the movie appearance could not be created.");
         }
 
         [HttpGet]
-        public async Task<IEnumerable<MovieAppearanceEntity>> GetAllMovieAppearancesAsync()
+        [ProducesResponseType(typeof(IEnumerable<MovieAppearanceListItem>),200)]
+        public async Task<IActionResult> GetAllMovieAppearancesAsync()
         {
-            var movieAppearances = await _service.GetAllMovieAppearancesAsync();
+            return Ok(await _service.GetAllMovieAppearancesAsync());
+        }
 
-            return movieAppearances;
+        [HttpGet("{movieAppearanceId:int}")]
+        [ProducesResponseType(typeof(MovieAppearanceDetail),200)]
+        public async Task<IActionResult> GetMovieAppearanceByIdAsync([FromRoute] int movieAppearanceId)
+        {
+            var movieAppearance = await _service.GetMovieAppearanceByIdAsync(movieAppearanceId);
+            if (movieAppearance == default) 
+            {
+                return NotFound();
+            }
+            return Ok(movieAppearance);
         }
 
         [HttpPut("{movieAppearanceId:int}")]
-        public async Task<IActionResult> UpdateMovieAppearanceAsync([FromRoute] int id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateMovieAppearanceAsync([FromRoute] int movieAppearanceId, [FromBody] MovieAppearanceUpdate request)
         {
-            var requestMovieAppearance = await _service.GetMovieAppearanceDetailByIdAsync(id);
-
-            var updateMovieAppearance = await _service.UpdateMovieAppearanceAsync(requestMovieAppearance);
-
-            if (updateMovieAppearance is false)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                return BadRequest(ModelState);
             }
-            return Ok(updateMovieAppearance);
-
+            if (await _service.UpdateMovieAppearanceAsync(movieAppearanceId, request))
+            {
+                return Ok("The movie appearance has been updated successfully.");
+            }
+            return BadRequest("Sorry, the movie appearnce could not be updated.");
         }
 
-        [HttpDelete("{movieAppearanceId:it}")]
-        public async Task<IActionResult> DeleteMovieAppearanceAsync(int id)
+        [HttpDelete("{movieAppearanceId:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteMovieAppearanceAsync([FromRoute] int movieAppearanceId)
         {
-            var movieAppearanceToDelete = await _service.DeleteMovieAppearanceAsync(id);
-
-            if (movieAppearanceToDelete is false)
-            {
-                return NotFound();
-            }
-            return Ok(movieAppearanceToDelete);
+            return await _service.DeleteMovieAppearanceAsync(movieAppearanceId) ? Ok($"The movie appearance with ID {movieAppearanceId} was deleted successfully.") : BadRequest($"Sorry, the movie appearance with ID {movieAppearanceId} could not be deleted.");
         }
-}
+    }
 }

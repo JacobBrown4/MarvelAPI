@@ -9,16 +9,16 @@ using MarvelAPI.Services.TVShowAppearance;
 var builder = WebApplication.CreateBuilder(args);
 
 //Add connection string and DbContext setup
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionNick");
-// var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionZach");
+// var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionNick");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionZach");
 // var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionMary");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
 // Add Services/Interfaces for Dependency Injection here
 builder.Services.AddScoped<IMovieAppearanceService, MovieAppearanceService>();
 builder.Services.AddScoped<ICharacterService, CharacterService>();
-builder.Services.AddScoped<IMoviesService, MoviesService>();
-builder.Services.AddScoped<ITVShowsService, TVShowsService>();
+builder.Services.AddScoped<IMovieService, MovieService>();
+builder.Services.AddScoped<ITVShowService, TVShowService>();
 builder.Services.AddScoped<ITVShowAppearanceService, TVShowAppearanceService>();
 
 // Add services to the container.

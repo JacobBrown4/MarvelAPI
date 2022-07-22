@@ -1,7 +1,4 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MarvelAPI.Data;
-using MarvelAPI.Data.Entities;
 using MarvelAPI.Services.MoviesService;
 using MarvelAPI.Models.Movies;
 
@@ -9,67 +6,102 @@ namespace MarvelAPI.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class MoviesController : ControllerBase
+    public class MovieController : ControllerBase
     {
-        private readonly IMoviesService _service;
-        private readonly AppDbContext _dbContext;
+        private readonly IMovieService _service;
 
-        public MoviesController(IMoviesService service, AppDbContext dbContext)
+        public MovieController(IMovieService service)
         {
             _service = service;
-            _dbContext = dbContext;
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        // ! Probably do not need this annotation
+        // ! Our response is in the return Ok
+        // [ProducesResponseType(typeof(MovieCreate), 200)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateMoviesAsync([FromBody] MoviesEntity model)
+        public async Task<IActionResult> CreateMoviesAsync([FromBody] MovieCreate model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var createMovies = await _service.CreateMoviesAsync(model);
-            if (createMovies)
+            if (await _service.CreateMoviesAsync(model))
             {
-                return Ok("Movie was added to Database.");
+                return Ok("The movie has been created and added to the database.");
             }
-            return BadRequest("Movie could not be added to Database.");
+            return BadRequest("Sorry, the movie could not be created.");
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<MoviesDetail>),200)]
-        public async Task<IEnumerable<MoviesEntity>> GetAllMoviesAsync()
+        [ProducesResponseType(typeof(IEnumerable<MovieListItem>),200)]
+        // ! Not sure if we need this annotation, we are already showing a 
+        // ! 200 response in the annotation above
+        // [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllMoviesAsync()
         {
-            var movies = await _service.GetAllMoviesAsync();
-            return movies;
+            return Ok(await _service.GetAllMoviesAsync());
         }
 
-        [HttpPut("{moviesId:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpGet("{movieId:int}")]
+        [ProducesResponseType(typeof(MovieDetail), 200)]
+        // ! Not sure if we need this annotation, we are already showing a 
+        // ! 200 response in the annotation above
+        // [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateMoviesAsync([FromRoute] int Id)
+        public async Task<IActionResult> GetMovieByIdAsync([FromRoute] int movieId)
         {
-            var requestMovies = await _dbContext.Movies.FindAsync(Id);
-            var updatedMovies = await _service.UpdateMoviesAsync(requestMovies);
-            if (updatedMovies is false)
+            var movie = await _service.GetMovieByIdAsync(movieId);
+            if (movie == default)
             {
-                return NotFound();
+                return NotFound("Sorry, the movie could not be found.");
             }
-            return Ok(updatedMovies);
+            return Ok(movie);
         }
 
-        [HttpDelete("{moviesId:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteMoviesAsync([FromRoute] int Id)
+        [HttpGet("{movieTitle}")]
+        [ProducesResponseType(typeof(MovieDetail), 200)]
+        // ! Not sure if we need this annotation, we are already showing a 
+        // ! 200 response in the annotation above
+        // [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetMovieByTitleAsync([FromRoute] string movieTitle)
         {
-            var moviesToDelete = await _service.DeleteMoviesAsync(Id);
-            if (moviesToDelete is false)
+            var movie = await _service.GetMovieByTitleAsync(movieTitle);
+            if (movie == default)
             {
-                return NotFound();
+                return NotFound("Sorry, the movie could not be found.");
             }
-            return Ok(moviesToDelete);
+            return Ok(movie);
+        }
+
+        [HttpPut("{movieId:int}")]
+        // ! Probably do not need this annotation
+        // ! Our response is in the return Ok
+        // [ProducesResponseType(typeof(MovieUpdate), 200)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateMoviesAsync([FromRoute] int movieId, [FromBody] MovieUpdate request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (await _service.UpdateMoviesAsync(movieId, request))
+            {
+                return Ok("The movie has been updated successfully.");
+            }
+            return BadRequest("Sorry, the movie could not be updated.");
+        }
+
+        [HttpDelete("{movieId:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteMoviesAsync([FromRoute] int movieId)
+        {
+            return await _service.DeleteMoviesAsync(movieId) ?
+            Ok($"The movie with ID {movieId} was deleted successfully."):
+            BadRequest($"The movie with ID {movieId} could not be deleted.");
         }
     }
 }
