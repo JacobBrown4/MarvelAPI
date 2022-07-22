@@ -5,14 +5,27 @@ using MarvelAPI.Services.Character;
 using MarvelAPI.Services.MoviesService;
 using MarvelAPI.Services.TVShowsService;
 using MarvelAPI.Services.TVShowAppearance;
+using Microsoft.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //Add connection string and DbContext setup
-// var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionNick");
-// var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionZach");
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionMary");
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+
+// * String builder used for user-secrets
+var conStrBuilder = new SqlConnectionStringBuilder(
+    builder.Configuration.GetConnectionString("DefaultConnectionUS")
+);
+conStrBuilder.Password = builder.Configuration["Password"];
+// * END of String builder calls
+
+// ? Connection string variables
+// * String builder for user-secrets
+var connection = conStrBuilder.ConnectionString;
+
+// * "DefaultConnectionTrust" for integrated security (Windows)
+// var connection = builder.Configuration.GetConnectionString("DefaultConnectionTrust");
+
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connection));
 
 // Add Services/Interfaces for Dependency Injection here
 builder.Services.AddScoped<IMovieAppearanceService, MovieAppearanceService>();
