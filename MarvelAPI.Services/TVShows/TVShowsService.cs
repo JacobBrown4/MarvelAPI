@@ -1,6 +1,8 @@
 using MarvelAPI.Data;
 using MarvelAPI.Data.Entities;
 using MarvelAPI.Models.TVShows;
+using MarvelAPI.Models.TVShowAppearance;
+using MarvelAPI.Models.Characters;
 using Microsoft.EntityFrameworkCore;
 
 namespace MarvelAPI.Services.TVShowsService
@@ -43,48 +45,88 @@ namespace MarvelAPI.Services.TVShowsService
             return tvShowList;
         }
 
-        // ! Removed IEnumerable from this since we are not returning a list
         public async Task<TVShowDetail> GetTVShowByIdAsync(int tvShowId)
         {
-            var tvShow = await _dbContext.TVShows.Select(tvSId => new TVShowDetail
+            var tvShow = await _dbContext.TVShows.FindAsync(tvShowId);
+            
+            var tvShowChar = await _dbContext.TVShowAppearance
+            .Select(
+                tvSA => new TVShowAppearanceDetail
             {
-                Id = tvSId.Id,
-                Title = tvSId.Title,
-                ReleaseYear = (int)tvSId.ReleaseYear,
-                Seasons = (int)tvSId.Seasons
-                // ! Not wanting to return a list, just one tv show detail
-                // ! With the .ToListAsync(); it returns all TV shows
-                // ! no matter what ID is entered
-                // ! Switched it to .Where --> .FirstOrDefaultAsync(); instead
+                Id = tvSA.Id,
+                CharacterId = tvSA.Character.Id,
+                Character = tvSA.Character.FullName,
+                TVShowId = tvSA.TVShow.Id,
+                TVShow = tvSA.TVShow.Title
             })
-            //.ToListAsync();
             .Where(
-                tvSId => tvSId.Id == tvShowId
+                tvS => tvS.TVShow == tvShow.Title
             )
-            .FirstOrDefaultAsync();
-            return tvShow;
+            .Select(
+                cLI => new CharacterListItem
+                {
+                    Id = cLI.CharacterId,
+                    FullName = cLI.Character
+                }
+            )
+            .ToListAsync();
+            var tvSID = new TVShowDetail
+            {
+                Id = tvShow.Id,
+                Title = tvShow.Title,
+                ReleaseYear = (int)tvShow.ReleaseYear,
+                Seasons = (int)tvShow.Seasons,
+                Characters = tvShowChar
+            };
+            return tvSID;
         }
 
-        // ! Removed IEnumerable from this since we are not returning a list
         public async Task<TVShowDetail> GetTVShowByTitleAsync(string tvShowTitle)
         {
-            var tvShow = await _dbContext.TVShows.Select(tvSTitle => new TVShowDetail
+            var tvShow = await _dbContext.TVShows
+            .Select(
+                tvSTitle => new TVShowDetail
             {
                 Id = tvSTitle.Id,
                 Title = tvSTitle.Title,
                 ReleaseYear = (int)tvSTitle.ReleaseYear,
-                Seasons = (int)tvSTitle.Seasons
-                // ! Not wanting to return a list, just one tv show detail
-                // ! With the .ToListAsync(); it returns all TV shows
-                // ! no matter what ID is entered
-                // ! Switched it to .Where --> .FirstOrDefaultAsync(); instead              
+                Seasons = (int)tvSTitle.Seasons           
             })
-            // .ToListAsync();
             .Where(
                 tvSTitle => tvSTitle.Title == tvShowTitle
             )
             .FirstOrDefaultAsync();
-            return tvShow;
+            var tvShowChar = await _dbContext.TVShowAppearance
+            .Select(
+                tvSA => new TVShowAppearanceDetail
+                {
+                    Id = tvSA.Id,
+                    CharacterId = tvSA.Character.Id,
+                    Character = tvSA.Character.FullName,
+                    TVShowId = tvSA.TVShow.Id,
+                    TVShow = tvSA.TVShow.Title
+                }
+            )
+            .Where(
+                tvS => tvS.TVShow == tvShow.Title
+            )
+            .Select(
+                cLI => new CharacterListItem
+                {
+                    Id = cLI.CharacterId,
+                    FullName = cLI.Character
+                }
+            )
+            .ToListAsync();
+            var tvSTitle = new TVShowDetail
+            {
+                Id = tvShow.Id,
+                Title = tvShow.Title,
+                ReleaseYear = (int)tvShow.ReleaseYear,
+                Seasons = (int)tvShow.Seasons,
+                Characters = tvShowChar
+            };
+            return tvSTitle;
         }
 
         public async Task<bool> UpdateTVShowAsync(int tvShowId, TVShowUpdate request)
@@ -115,6 +157,10 @@ namespace MarvelAPI.Services.TVShowsService
         public async Task<bool> DeleteTVShowAsync(int tvShowId)
         {
             var tvShowDelete = await _dbContext.TVShows.FindAsync(tvShowId);
+            if (tvShowDelete is null) 
+            {
+                return false;
+            }
             _dbContext.TVShows.Remove(tvShowDelete);
             return await _dbContext.SaveChangesAsync() == 1;
         }

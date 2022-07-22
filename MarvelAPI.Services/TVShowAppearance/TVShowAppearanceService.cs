@@ -78,6 +78,10 @@ namespace MarvelAPI.Services.TVShowAppearance
         public async Task<bool> DeleteTVShowAppearanceAsync(int tvShowAppearanceId)
         {
             var tvShowAppearance = await _dbContext.TVShowAppearance.FindAsync(tvShowAppearanceId);
+            if (tvShowAppearance is null) 
+            {
+                return false;
+            }
             _dbContext.TVShowAppearance.Remove(tvShowAppearance);
             return await _dbContext.SaveChangesAsync() == 1;
         }

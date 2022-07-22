@@ -103,7 +103,7 @@ namespace MarvelAPI.WebAPI.Controllers
         {
             return await _service.DeleteTVShowAsync(tvShowId) ?
             Ok($"The TV show with ID {tvShowId} was deleted successfully."):
-            BadRequest($"Sorry, the TV show with ID {tvShowId} could not be deleted.");
+            BadRequest($"Sorry, the TV show with ID {tvShowId} could not be deleted. Verify the TV show Id is accurate.");
         }
     }
 }

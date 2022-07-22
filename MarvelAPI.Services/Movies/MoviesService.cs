@@ -89,7 +89,9 @@ namespace MarvelAPI.Services.MoviesService
                 mf => new MovieDetail
                 {
                     Id = mf.Id,
-                    Title = mf.Title
+                    Title = mf.Title,
+                    // added ReleaseYear because otherwise would return 0
+                    ReleaseYear = (int)mf.ReleaseYear
                 }
             )
             .Where(
@@ -157,6 +159,10 @@ namespace MarvelAPI.Services.MoviesService
         public async Task<bool> DeleteMoviesAsync(int movieId)
         {
             var moviesDelete = await _dbContext.Movies.FindAsync(movieId);
+            if (moviesDelete is null) 
+            {
+                return false;
+            }
             _dbContext.Movies.Remove(moviesDelete);
             return await _dbContext.SaveChangesAsync() == 1;
         }
