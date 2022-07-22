@@ -113,6 +113,8 @@ namespace MarvelAPI.Services.Character
                 Origin = characterFound.Origin,
                 Abilities = characterFound.Abilities,
                 AbilitiesOrigin = characterFound.AbilitiesOrigin,
+                Aliases = characterFound.Aliases,
+                Status = characterFound.Status,
                 Movies = characterMovies,
                 TVShows = characterTVShows
             };
@@ -131,6 +133,8 @@ namespace MarvelAPI.Services.Character
             characterFound.Origin = CheckUpdateProperty(characterFound.Origin, request.Origin);
             characterFound.Abilities = CheckUpdateProperty(characterFound.Abilities, request.Abilities);
             characterFound.AbilitiesOrigin = CheckUpdateProperty(characterFound.AbilitiesOrigin, request.AbilitiesOrigin);
+            characterFound.Aliases = CheckUpdateProperty(characterFound.Aliases, request.Aliases);
+            characterFound.Status = CheckUpdateProperty(characterFound.Status, request.Status);
             var numOfChanges = await _dbContext.SaveChangesAsync();
             return numOfChanges == 1;
         }
