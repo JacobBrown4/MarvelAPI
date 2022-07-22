@@ -1,6 +1,9 @@
+using System.Reflection;
 using MarvelAPI.Data;
 using MarvelAPI.Data.Entities;
 using MarvelAPI.Models.Movies;
+using MarvelAPI.Models.MovieAppearance;
+using MarvelAPI.Models.Characters;
 using Microsoft.EntityFrameworkCore;
 
 namespace MarvelAPI.Services.MoviesService
@@ -42,46 +45,89 @@ namespace MarvelAPI.Services.MoviesService
             return movieList;
         }
 
-        // ! Removed IEnumerable from this since we are not returning a list
         public async Task<MovieDetail> GetMovieByIdAsync(int movieId)
         {
-            var movie = await _dbContext.Movies.Select(m => new MovieDetail
-            {
-                Id = m.Id,
-                Title = m.Title,
-                ReleaseYear = (int)m.ReleaseYear
-                // ! Not wanting to return a list, just one tv show detail
-                // ! With the .ToListAsync(); it returns all TV shows
-                // ! no matter what ID is entered
-                // ! Switched it to .Where --> .FirstOrDefaultAsync(); instead
-            })
-            //.ToListAsync();
-            .Where(
-                m => m.Id == movieId
+            var movieFound = await _dbContext.Movies.FindAsync(movieId);
+
+            var movieCharacters = await _dbContext.MovieAppearances
+            .Select(
+                ma => new MovieAppearanceDetail
+                {
+                    Id = ma.Id,
+                    CharacterId = ma.Character.Id,
+                    Character = ma.Character.FullName,
+                    MovieId = ma.Movie.Id,
+                    Movie = ma.Movie.Title
+                }
             )
-            .FirstOrDefaultAsync();
-            return movie;
+            .Where(
+                m => m.Movie == movieFound.Title
+            )
+            .Select(
+                cli => new CharacterListItem
+                {
+                    Id = cli.CharacterId,
+                    FullName = cli.Character
+                }
+            )
+            .ToListAsync();
+
+            var result = new MovieDetail
+            {
+                Id = movieFound.Id,
+                Title = movieFound.Title,
+                ReleaseYear = (int)movieFound.ReleaseYear,
+                Characters = movieCharacters
+            };
+            return result;
         }
 
-        // ! Removed IEnumerable from this since we are not returning a list
         public async Task<MovieDetail> GetMovieByTitleAsync(string movieTitle)
         {
-            var movie = await _dbContext.Movies.Select(m => new MovieDetail
-            {
-                Id = m.Id,
-                Title = m.Title,
-                ReleaseYear = (int)m.ReleaseYear
-                // ! Not wanting to return a list, just one tv show detail
-                // ! With the .ToListAsync(); it returns all TV shows
-                // ! no matter what ID is entered
-                // ! Switched it to .Where --> .FirstOrDefaultAsync(); instead  
-            })
-            //.ToListAsync();
+            var movieFound = await _dbContext.Movies
+            .Select(
+                mf => new MovieDetail
+                {
+                    Id = mf.Id,
+                    Title = mf.Title
+                }
+            )
             .Where(
                 m => m.Title == movieTitle
             )
             .FirstOrDefaultAsync();
-            return movie;
+
+            var movieCharacters = await _dbContext.MovieAppearances
+            .Select(
+                ma => new MovieAppearanceDetail
+                {
+                    Id = ma.Id,
+                    CharacterId = ma.Character.Id,
+                    Character = ma.Character.FullName,
+                    MovieId = ma.Movie.Id,
+                    Movie = ma.Movie.Title
+                }
+            )
+            .Where(
+                m => m.Movie == movieFound.Title
+            )
+            .Select(
+                cli => new CharacterListItem
+                {
+                    Id = cli.CharacterId,
+                    FullName = cli.Character
+                }
+            )
+            .ToListAsync();
+
+            var result = new MovieDetail
+            {
+                Id = movieFound.Id,
+                Title = movieFound.Title,
+                ReleaseYear = (int)movieFound.ReleaseYear,
+                Characters = movieCharacters
+            };
+            return result;
         }
 
         public async Task<bool> UpdateMoviesAsync(int movieId, MovieUpdate request)

@@ -65,6 +65,7 @@ namespace MarvelAPI.WebAPI.Controllers
         // ! Not sure if we need this annotation, we are already showing a 
         // ! 200 response in the annotation above
         // [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetMovieByTitleAsync([FromRoute] string movieTitle)
         {
             var movie = await _service.GetMovieByTitleAsync(movieTitle);
