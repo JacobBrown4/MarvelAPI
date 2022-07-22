@@ -14,5 +14,7 @@ namespace MarvelAPI.Models.Characters
         public string Origin { get; set; }
         public string Abilities { get; set; }
         public string AbilitiesOrigin { get; set; }
+        public string Aliases { get; set; }
+        public string Status { get; set; }
     }
 }
