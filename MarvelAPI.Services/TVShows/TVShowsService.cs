@@ -5,17 +5,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MarvelAPI.Services.TVShowsService
 {
-    public class TVShowsService : ITVShowsService
+    public class TVShowService : ITVShowService
     {
         private readonly AppDbContext _dbContext;
-        public TVShowsService (AppDbContext dbContext)
+        public TVShowService (AppDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
         public async Task<bool> CreateTVShowAsync (TVShowCreate model)
         {
-            var tvShowsCreate = new TVShowsEntity
+            var tvShowCreate = new TVShowsEntity
             {
                 Title = model.Title,
                 ReleaseYear = model.ReleaseYear,
@@ -23,12 +23,12 @@ namespace MarvelAPI.Services.TVShowsService
             };
             foreach (var tvS in await _dbContext.TVShows.ToListAsync())
             {
-                if (ReformatCreatedTitle(tvS) == ReformatCreatedTitle(tvShowsCreate))
+                if (ReformatTitle(tvS) == ReformatTitle(tvShowCreate))
                 {
                     return false;
                 }
             }
-            _dbContext.TVShows.Add(tvShowsCreate);
+            _dbContext.TVShows.Add(tvShowCreate);
             var numberOfChanges = await _dbContext.SaveChangesAsync();
             return numberOfChanges == 1;
         }
@@ -87,46 +87,41 @@ namespace MarvelAPI.Services.TVShowsService
             return tvShow;
         }
 
-        public async Task<bool> UpdateTVShowAsync(int tvShowId, TVShowUpdate update)
+        public async Task<bool> UpdateTVShowAsync(int tvShowId, TVShowUpdate request)
         {
-            var tvShowsFound = await _dbContext.TVShows.FindAsync(tvShowId);
-            if (tvShowsFound is null)
+            var tvShowFound = await _dbContext.TVShows.FindAsync(tvShowId);
+            if (tvShowFound is null)
             {
                 return false;
             }
-            var tvShowsUpdate = new TVShowsEntity
+            var tvShowUpdate = new TVShowsEntity
             {
-                Title = update.Title
+                Title = request.Title
             };
             foreach (var tvS in await _dbContext.TVShows.ToListAsync())
             {
-                if (ReformatUpdatedTitle(tvS) == ReformatUpdatedTitle(tvShowsUpdate))
+                if (ReformatTitle(tvS) == ReformatTitle(tvShowUpdate))
                 {
                     return false;
                 }
             }
-            tvShowsFound.Title = update.Title;
-            tvShowsFound.ReleaseYear = update.ReleaseYear;
-            tvShowsFound.Seasons = update.Seasons;
+            tvShowFound.Title = request.Title;
+            tvShowFound.ReleaseYear = request.ReleaseYear;
+            tvShowFound.Seasons = request.Seasons;
             var numberOfChanges = await _dbContext.SaveChangesAsync();
             return numberOfChanges == 1;
         }
 
         public async Task<bool> DeleteTVShowAsync(int tvShowId)
         {
-            var tvShowsDelete = await _dbContext.TVShows.FindAsync(tvShowId);
-            _dbContext.TVShows.Remove(tvShowsDelete);
+            var tvShowDelete = await _dbContext.TVShows.FindAsync(tvShowId);
+            _dbContext.TVShows.Remove(tvShowDelete);
             return await _dbContext.SaveChangesAsync() == 1;
         }
 
-        private string ReformatCreatedTitle(TVShowsEntity tvShowCreate)
+        private string ReformatTitle(TVShowsEntity tvShow)
         {
-            var tvShowReform = String.Concat(tvShowCreate.Title.Split(' ', '-')).ToLower();
-            return tvShowReform;
-        }
-        private string ReformatUpdatedTitle(TVShowsEntity tvShowUpdate)
-        {
-            var tvShowReform = String.Concat(tvShowUpdate.Title.Split(' ', '-')).ToLower();
+            var tvShowReform = String.Concat(tvShow.Title.Split(' ', '-')).ToLower();
             return tvShowReform;
         }
     }

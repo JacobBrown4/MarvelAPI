@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MarvelAPI.Models.Movies
 {
-    public class MoviesCreate
+    public class MovieCreate
     {
         [Required]
         [MinLength(1, ErrorMessage = "{0} must be at least {1} characters long.")]

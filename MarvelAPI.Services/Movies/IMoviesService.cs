@@ -3,13 +3,13 @@ using MarvelAPI.Models.Movies;
 
 namespace MarvelAPI.Services.MoviesService
 {
-    public interface IMoviesService
+    public interface IMovieService
     {
-        Task<bool> CreateMoviesAsync(MoviesCreate model);
-        Task<IEnumerable<MoviesListItem>> GetAllMoviesAsync();
-        Task<IEnumerable<MoviesDetail>> GetMovieByIdAsync(int moviesId);
-        Task<IEnumerable<MoviesDetail>> GetMovieByTitleAsync(string moviesTitle);
-        Task<bool> UpdateMoviesAsync(int moviesId, MoviesUpdate request);
-        Task<bool> DeleteMoviesAsync(int moviesId);
+        Task<bool> CreateMoviesAsync(MovieCreate model);
+        Task<IEnumerable<MovieListItem>> GetAllMoviesAsync();
+        Task<MovieDetail> GetMovieByIdAsync(int movieId);
+        Task<MovieDetail> GetMovieByTitleAsync(string movieTitle);
+        Task<bool> UpdateMoviesAsync(int movieId, MovieUpdate request);
+        Task<bool> DeleteMoviesAsync(int movieId);
     }
 }

@@ -6,11 +6,11 @@ namespace MarvelAPI.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TVShowsController : ControllerBase
+    public class TVShowController : ControllerBase
     {
-        private readonly ITVShowsService _service;
+        private readonly ITVShowService _service;
 
-        public TVShowsController(ITVShowsService service)
+        public TVShowController(ITVShowService service)
         {
             _service = service;
         }

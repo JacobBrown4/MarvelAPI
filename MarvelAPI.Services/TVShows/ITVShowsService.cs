@@ -3,7 +3,7 @@ using MarvelAPI.Models.TVShows;
 
 namespace MarvelAPI.Services.TVShowsService
 {
-    public interface ITVShowsService
+    public interface ITVShowService
     {
         Task<bool> CreateTVShowAsync(TVShowCreate model);
         Task<IEnumerable<TVShowListItem>> GetAllTVShowsAsync();

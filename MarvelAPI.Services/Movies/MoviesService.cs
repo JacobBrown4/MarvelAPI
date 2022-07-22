@@ -5,22 +5,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MarvelAPI.Services.MoviesService
 {
-    public class MoviesService : IMoviesService
+    public class MovieService : IMovieService
     {
         private readonly AppDbContext _dbContext;
-        public MoviesService (AppDbContext dbContext)
+        public MovieService (AppDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public async Task<bool> CreateMoviesAsync (MoviesCreate model)
+        public async Task<bool> CreateMoviesAsync (MovieCreate model)
         {
             var movie = new MoviesEntity
             {
                 Title = model.Title,
                 ReleaseYear = model.ReleaseYear
             };
-            // Verify no duplicates by Title (formatting for comparison)
             foreach (var m in await _dbContext.Movies.ToListAsync())
             {
                 if (ReformatTitle(m) == ReformatTitle(movie)) 
@@ -33,9 +32,9 @@ namespace MarvelAPI.Services.MoviesService
             return numberOfChanges == 1;
         }
 
-        public async Task<IEnumerable<MoviesListItem>> GetAllMoviesAsync()
+        public async Task<IEnumerable<MovieListItem>> GetAllMoviesAsync()
         {
-            var movieList = await _dbContext.Movies.Select(m => new MoviesListItem
+            var movieList = await _dbContext.Movies.Select(m => new MovieListItem
             {
                 Id = m.Id,
                 Title = m.Title
@@ -43,55 +42,75 @@ namespace MarvelAPI.Services.MoviesService
             return movieList;
         }
 
-        public async Task<IEnumerable<MoviesDetail>> GetMovieByIdAsync(int moviesId)
+        // ! Removed IEnumerable from this since we are not returning a list
+        public async Task<MovieDetail> GetMovieByIdAsync(int movieId)
         {
-            var movieId = await _dbContext.Movies.Select(mL => new MoviesDetail
+            var movie = await _dbContext.Movies.Select(m => new MovieDetail
             {
-                Id = mL.Id,
-                Title = mL.Title,
-                ReleaseYear = (int)mL.ReleaseYear
-            }).ToListAsync();
-            return movieId;
+                Id = m.Id,
+                Title = m.Title,
+                ReleaseYear = (int)m.ReleaseYear
+                // ! Not wanting to return a list, just one tv show detail
+                // ! With the .ToListAsync(); it returns all TV shows
+                // ! no matter what ID is entered
+                // ! Switched it to .Where --> .FirstOrDefaultAsync(); instead
+            })
+            //.ToListAsync();
+            .Where(
+                m => m.Id == movieId
+            )
+            .FirstOrDefaultAsync();
+            return movie;
         }
 
-        public async Task<IEnumerable<MoviesDetail>> GetMovieByTitleAsync(string moviesTitle)
+        // ! Removed IEnumerable from this since we are not returning a list
+        public async Task<MovieDetail> GetMovieByTitleAsync(string movieTitle)
         {
-            var movieTitle = await _dbContext.Movies.Select(mT => new MoviesDetail
+            var movie = await _dbContext.Movies.Select(m => new MovieDetail
             {
-                Id = mT.Id,
-                Title = mT.Title,
-                ReleaseYear = (int)mT.ReleaseYear
-            }).ToListAsync();
-            return movieTitle;
+                Id = m.Id,
+                Title = m.Title,
+                ReleaseYear = (int)m.ReleaseYear
+                // ! Not wanting to return a list, just one tv show detail
+                // ! With the .ToListAsync(); it returns all TV shows
+                // ! no matter what ID is entered
+                // ! Switched it to .Where --> .FirstOrDefaultAsync(); instead  
+            })
+            //.ToListAsync();
+            .Where(
+                m => m.Title == movieTitle
+            )
+            .FirstOrDefaultAsync();
+            return movie;
         }
 
-        public async Task<bool> UpdateMoviesAsync(int moviesId, MoviesUpdate update)
+        public async Task<bool> UpdateMoviesAsync(int movieId, MovieUpdate request)
         {
-            var moviesFound = await _dbContext.Movies.FindAsync(moviesId);
-            if (moviesFound is null)
+            var movieFound = await _dbContext.Movies.FindAsync(movieId);
+            if (movieFound is null)
             {
                 return false;
             }
-            var moviesUpdate = new MoviesEntity
+            var movieUpdate = new MoviesEntity
             {
-                Title = update.Title
+                Title = request.Title
             };
             foreach (var m in await _dbContext.Movies.ToListAsync())
             {
-                if (ReformatTitle(m) == ReformatTitle(moviesUpdate))
+                if (ReformatTitle(m) == ReformatTitle(movieUpdate))
                 {
                     return false;
                 }
             }
-            moviesFound.Title = update.Title;
-            moviesFound.ReleaseYear = update.ReleaseYear;
+            movieFound.Title = request.Title;
+            movieFound.ReleaseYear = request.ReleaseYear;
             var numberOfChanges = await _dbContext.SaveChangesAsync();
             return numberOfChanges == 1;
         }
 
-        public async Task<bool> DeleteMoviesAsync(int moviesId)
+        public async Task<bool> DeleteMoviesAsync(int movieId)
         {
-            var moviesDelete = await _dbContext.Movies.FindAsync(moviesId);
+            var moviesDelete = await _dbContext.Movies.FindAsync(movieId);
             _dbContext.Movies.Remove(moviesDelete);
             return await _dbContext.SaveChangesAsync() == 1;
         }
