@@ -15,7 +15,7 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateTVShowAppearanceAsync([FromBody] TVShowAppearanceCreate model)
         {
@@ -23,48 +23,54 @@ namespace MarvelAPI.WebAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var createTVShowAppearance = await _service.CreateTVShowAppearanceAsync(model);
-
-            if (createTVShowAppearance)
+            if (await _service.CreateTVShowAppearanceAsync(model))
             {
-                return Ok("TV Show Appearance was added to Database.");
+                return Ok("The TV show appearance has been created and added to database.");
             }
-            return BadRequest("TV Show Appearance was not added to the Database.");
+            return BadRequest("Sorry, the TV show appearance could not be created.");
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<TVShowAppearanceDetail>),200)]
-        public async Task<IEnumerable<TVShowAppearanceEntity>> GetAllTVShowAppearanceAsync()
+        [ProducesResponseType(typeof(IEnumerable<TVShowAppearanceListItem>),200)]
+        public async Task<IActionResult> GetAllTVShowAppearanceAsync()
         {
-            var tvShowAppearance = await _service.GetAllTVShowAppearanceAsync();
-            return tvShowAppearance;
+            return Ok(await _service.GetAllTVShowAppearancesAsync());
+        }
+
+        [HttpGet("{tvShowAppearanceId:int}")]
+        [ProducesResponseType(typeof(TVShowAppearanceDetail),200)]
+        public async Task<IActionResult> GetTVShowAppearanceByIdAsync([FromRoute] int tvShowAppearanceId)
+        {
+            var tvShowAppearance = await _service.GetTVShowAppearanceByIdAsync(tvShowAppearanceId);
+            if (tvShowAppearance == default)
+            {
+                return NotFound();
+            }
+            return Ok(tvShowAppearance);
         }
 
         [HttpPut("{tvShowAppearanceId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateTVShowAppearanceAsync([FromRoute] int Id)
+        public async Task<IActionResult> UpdateTVShowAppearanceAsync([FromRoute] int tvShowAppearanceId, [FromBody] TVShowAppearanceUpdate request)
         {
-            var requestTVShowAppearance = await _service.GetTVShowAppearanceDetailByIdAsync(Id);
-            var updatedTVShowAppearance = await _service.UpdateTVShowAppearanceAsync(requestTVShowAppearance);
-            if (updatedTVShowAppearance is false)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                return BadRequest(ModelState);
             }
-            return Ok(updatedTVShowAppearance);
+            if (await _service.UpdateTVShowAppearanceAsync(tvShowAppearanceId, request))
+            {
+                return Ok("The TV show appearance has been updated successfully.");
+            }
+            return BadRequest("Sorry,the movie appearance could not be updated.");
         }
 
         [HttpDelete("{tvShowAppearanceId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteTVShowAppearanceAsync([FromRoute] int Id)
+        public async Task<IActionResult> DeleteTVShowAppearanceAsync([FromRoute] int tvShowAppearanceId)
         {
-            var tvShowAppearanceToDelete = await _service.DeleteTVShowAppearanceAsync(Id);
-            if (tvShowAppearanceToDelete is false)
-            {
-                return NotFound();
-            }
-            return Ok(tvShowAppearanceToDelete);
+            return await _service.DeleteTVShowAppearanceAsync(tvShowAppearanceId) ? Ok($"The TV show appearance with ID {tvShowAppearanceId} was deleted successfully.") : BadRequest($"Sorry, the TV show appearance with ID {tvShowAppearanceId} could not be deleted.");
         }
     }
 }
