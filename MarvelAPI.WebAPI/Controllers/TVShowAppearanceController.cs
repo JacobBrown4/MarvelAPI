@@ -1,4 +1,3 @@
-using MarvelAPI.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using MarvelAPI.Models.TVShowAppearance;
 using MarvelAPI.Services.TVShowAppearance;
@@ -28,11 +27,7 @@ namespace MarvelAPI.WebAPI.Controllers
             {
                 return Ok("The TV show appearance has been created and added to database.");
             }
-<<<<<<< HEAD
-            return BadRequest("TV Show Appearance could not be added to the Database.");
-=======
             return BadRequest("Sorry, the TV show appearance could not be created.");
->>>>>>> 8df297afbc9912c596fe2dbf5f2364b29d0cfb42
         }
 
         [HttpGet]

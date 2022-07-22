@@ -1,4 +1,3 @@
-using MarvelAPI.Data.Entities;
 using MarvelAPI.Models.MovieAppearance;
 using MarvelAPI.Services.MovieAppearance;
 using Microsoft.AspNetCore.Mvc;
