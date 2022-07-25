@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MarvelAPI.Services.User;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MarvelAPI.WebAPI.Controllers
 {
@@ -17,5 +18,11 @@ namespace MarvelAPI.WebAPI.Controllers
         {
             _service = service;
         }
+
+        // [Authorize]
+        // [HttpGet("{userId:int}")]
+        // public async Task<IActionResult> GetById([FromRoute] int userId) {
+        //     // var userDetail = await _service.GetUserByIdAsync(userId);
+        // }
     }
 }

@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.EntityFrameworkCore;
 using MarvelAPI.Data;
 using MarvelAPI.Services.MovieAppearance;
@@ -7,6 +8,9 @@ using MarvelAPI.Services.TVShowsService;
 using MarvelAPI.Services.TVShowAppearance;
 using MarvelAPI.Services.User;
 using Microsoft.Data.SqlClient;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using MarvelAPI.Services.Token;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +37,30 @@ builder.Services.AddScoped<IMovieService, MovieService>();
 builder.Services.AddScoped<ITVShowService, TVShowService>();
 builder.Services.AddScoped<ITVShowAppearanceService, TVShowAppearanceService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+
+builder.Services.AddAuthentication
+    (
+        JwtBearerDefaults.AuthenticationScheme
+    )
+    .AddJwtBearer(
+        options =>
+        {
+            options.RequireHttpsMetadata = false;
+            options.SaveToken = true;
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                ValidAudience = builder.Configuration["Jwt:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey
+                (
+                    Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
+                )
+            };
+        }
+    );
 
 // Add services to the container.
 
@@ -51,6 +79,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Adds AuthenticationMiddleware to IApplicationBuilder
+app.UseAuthentication();
 
 app.UseAuthorization();
 
