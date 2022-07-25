@@ -144,7 +144,7 @@ Get all characters:
 Get a character by Id:
 
 `GET /api/Character/{characterId}`
-- Request completed using `Route ` *int* characterId
+- Request completed using `Route` *int* characterId
 
 *Example Response:*
 ```
@@ -235,7 +235,7 @@ Update a character:
 Delete a character:
 
 `DELETE /api/Character/{characterId}}`
-- Request completed using `Route ` *int* characterId
+- Request completed using `Route` *int* characterId
 - Response will be status 200 OK if successful
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -445,7 +445,7 @@ Update a TV show:
 Delete a TV show:
 
 `DELETE /api/tvShow/{tvShowId}`
-- Request completed using `Route ` *int* tvShowId
+- Request completed using `Route` *int* tvShowId
 - Response will be status 200 OK if successful
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -524,7 +524,7 @@ Update a movie appearance:
 Delete a movie appearance:
 
 `DELETE /api/MovieAppearance/{movieAppearanceId}`
-- Request completed using `Route ` *int* movieAppearanceId
+- Request completed using `Route` *int* movieAppearanceId
 - Response will be status 200 OK if successful
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -603,7 +603,7 @@ Update a TV show appearance:
 Delete a movie appearance:
 
 `DELETE /api/TVShowAppearance/{tvShowAppearanceId}`
-- Request completed using `Route ` *int* tvShowAppearanceId
+- Request completed using `Route` *int* tvShowAppearanceId
 - Response will be status 200 OK if successful
 
 <p align="right">(<a href="#top">back to top</a>)</p>
