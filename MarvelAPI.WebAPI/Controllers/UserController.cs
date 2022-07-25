@@ -22,7 +22,7 @@ namespace MarvelAPI.WebAPI.Controllers
         [HttpPost("Register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> RegisterUser([FromBody] UserRegister model)
+        public async Task<IActionResult> RegisterUserAsync([FromBody] UserRegister model)
         {
             if (!ModelState.IsValid)
             {
@@ -35,6 +35,19 @@ namespace MarvelAPI.WebAPI.Controllers
                 return Ok("The user was registered.");
             }
             return BadRequest("Sorry, the user could not be registered.");
+        }
+
+        [HttpGet("{userId:int}")]
+        public async Task<IActionResult> GetUserByIdAsync([FromRoute] int userId)
+        {
+            var userDetail = await _service.GetUserByIdAsync(userId);
+
+            if (userDetail is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(userDetail);
         }
     }
 }
