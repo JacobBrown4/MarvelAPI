@@ -25,7 +25,7 @@ namespace MarvelAPI.Services.Character
             };
             // Verify no duplicates by FullName (formatting for comparison)
             foreach (var c in await _dbContext.Characters.ToListAsync()) {
-                if (ReformatFullName(c) == ReformatFullName(character)) {
+                if (ReformatFullName(c.FullName) == ReformatFullName(character.FullName)) {
                     return false;
                 }
             }
@@ -92,7 +92,7 @@ namespace MarvelAPI.Services.Character
                         MovieId = ma.MovieId
                 })
                 .Where(
-                    o => o.Character == characterFound.FullName
+                    o => o.CharacterId == characterFound.Id
                 )
                 .Select(
                     mad => new MovieListItem{
@@ -163,12 +163,12 @@ namespace MarvelAPI.Services.Character
             return await _dbContext.SaveChangesAsync() == 1;
         }
 
-        private string ReformatFullName(CharacterEntity character) {
+        private string ReformatFullName(string name) {
             // Returns a reformatted version of a CharacterEntity's FullName,
             // to be more easily compared against others formatted the same way.
 
             // If there is a space/hyphen in the name, ignore it in the result to return
-            var result = String.Concat(character.FullName.Split(' ', '-')).ToLower();
+            var result = String.Concat(name.Split(' ', '-')).ToLower();
             return result;
         }
 
