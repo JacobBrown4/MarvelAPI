@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using MarvelAPI.Services.User;
 using MarvelAPI.Models.Users;
 
@@ -36,7 +37,14 @@ namespace MarvelAPI.WebAPI.Controllers
             }
             return BadRequest("Sorry, the user could not be registered.");
         }
+        
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsersAsync() 
+        {
+            return Ok(await _service.GetAllUsersAsync());
+        }
 
+        [Authorize]
         [HttpGet("{userId:int}")]
         public async Task<IActionResult> GetUserByIdAsync([FromRoute] int userId)
         {

@@ -2,6 +2,7 @@ using MarvelAPI.Models.Users;
 using MarvelAPI.Data;
 using MarvelAPI.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace MarvelAPI.Services.User
 {
@@ -27,11 +28,33 @@ namespace MarvelAPI.Services.User
                 DateCreated = DateTime.Now
             };
 
+            var passwordHasher = new PasswordHasher<UserEntity>();
+
+            user.Password = passwordHasher.HashPassword(user, model.Password);
+
             _dbContext.Users.Add(user);
             var numberOfChanges = await _dbContext.SaveChangesAsync();
 
             return numberOfChanges == 1;
         }
+
+        public async Task<IEnumerable<UserDetail>> GetAllUsersAsync()
+        {
+            var users = await _dbContext.Users
+                .Select(
+                    u => new UserDetail
+                    {
+                        Id = u.Id,
+                        Username = u.Username,
+                        Email = u.Email,
+                        FirstName = u.FirstName,
+                        LastName = u.LastName,
+                        DateCreated = u.DateCreated
+                    }
+                )
+                .ToListAsync();
+                return users;
+    }
 
         public async Task<UserDetail> GetUserByIdAsync(int userId)
         {
