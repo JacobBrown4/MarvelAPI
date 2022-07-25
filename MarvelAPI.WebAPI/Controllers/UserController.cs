@@ -57,5 +57,17 @@ namespace MarvelAPI.WebAPI.Controllers
 
             return Ok(userDetail);
         }
+
+        // [HttpPut("{userId:int}")]
+        // public async Task<IActionResult> UpdateUserAsync([FromRoute] int userId, [FromBody] UserUpdate request)
+        // {
+
+        // }
+
+        // [HttpDelete("{userId:int}")]
+        // public async Task<IActionResult> DeleteUserAsync([FromRoute] int userId)
+        // {
+
+        // }
     }
 }

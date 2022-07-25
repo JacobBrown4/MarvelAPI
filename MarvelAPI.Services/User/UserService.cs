@@ -77,6 +77,37 @@ namespace MarvelAPI.Services.User
             return userDetail;
         }
 
+        // public async Task<bool> UpdateUserAsync(int userId, UserUpdate request)
+        // {
+        //     var userFound = await _dbContext.Users.FindAsync(userId);
+
+        //     if (userFound is null)
+        //     {
+        //         return false;
+        //     }
+
+        //     var isOwner = await _dbContext.Users
+        //         .Select(
+        //             u => new UserEntity
+        //             {
+        //                 Username = u.Username,
+        //                 Email = u.Email,
+        //                 Password = u.Password,
+        //                 FirstName = u.FirstName,
+        //                 LastName = u.LastName
+        //             }
+        //         )
+        //         .Where(
+        //             isO => isO.Id == userFound.Id
+        //         )
+        //         .ToListAsync();
+        // }
+
+        // public async Task<bool> DeleteUserAsync(int userId)
+        // {
+
+        // }
+
         private async Task<UserEntity> GetUserByEmailAsync(string email)
         {
             return await _dbContext.Users.FirstOrDefaultAsync(user => user.Email.ToLower() == email.ToLower());
