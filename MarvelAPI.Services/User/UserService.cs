@@ -33,6 +33,27 @@ namespace MarvelAPI.Services.User
             return numberOfChanges == 1;
         }
 
+        public async Task<UserDetail> GetUserByIdAsync(int userId)
+        {
+            var user = await _dbContext.Users.FindAsync(userId);
+
+            if (user is null)
+            {
+                return null;
+            }
+
+            var userDetail = new UserDetail
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Username = user.Username,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                DateCreated = user.DateCreated
+            };
+            return userDetail;
+        }
+
         private async Task<UserEntity> GetUserByEmailAsync(string email)
         {
             return await _dbContext.Users.FirstOrDefaultAsync(user => user.Email.ToLower() == email.ToLower());
