@@ -600,7 +600,7 @@ Update a TV show appearance:
 
 <br />
 
-Delete a movie appearance:
+Delete a TV show appearance:
 
 `DELETE /api/TVShowAppearance/{tvShowAppearanceId}`
 - Request completed using `Route` *int* tvShowAppearanceId
