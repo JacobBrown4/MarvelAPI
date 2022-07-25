@@ -5,6 +5,7 @@ using MarvelAPI.Services.Character;
 using MarvelAPI.Services.MoviesService;
 using MarvelAPI.Services.TVShowsService;
 using MarvelAPI.Services.TVShowAppearance;
+using MarvelAPI.Services.User;
 using Microsoft.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +32,7 @@ builder.Services.AddScoped<ICharacterService, CharacterService>();
 builder.Services.AddScoped<IMovieService, MovieService>();
 builder.Services.AddScoped<ITVShowService, TVShowService>();
 builder.Services.AddScoped<ITVShowAppearanceService, TVShowAppearanceService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 // Add services to the container.
 
