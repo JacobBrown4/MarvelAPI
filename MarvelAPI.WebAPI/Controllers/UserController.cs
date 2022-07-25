@@ -23,11 +23,11 @@ namespace MarvelAPI.WebAPI.Controllers
             _tokenService = tokenService;
         }
 
-        [Authorize]
-        [HttpGet("{userId:int}")]
-        public async Task<IActionResult> GetById([FromRoute] int userId) {
-            var userDetail = await _userService.GetUserByIdAsync(userId);
-        }
+        // [Authorize]
+        // [HttpGet("{userId:int}")]
+        // public async Task<IActionResult> GetById([FromRoute] int userId) {
+        //     var userDetail = await _userService.GetUserByIdAsync(userId);
+        // }
 
         [HttpPost("~/api/Token")]
         public async Task<IActionResult> Token([FromBody] TokenRequest request) {
