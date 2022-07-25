@@ -12,18 +12,16 @@ var builder = WebApplication.CreateBuilder(args);
 //Add connection string and DbContext setup
 
 // * String builder used for user-secrets
-var conStrBuilder = new SqlConnectionStringBuilder(
-    builder.Configuration.GetConnectionString("DefaultConnectionUS")
-);
-conStrBuilder.Password = builder.Configuration["Password"];
+// var conStrBuilder = new SqlConnectionStringBuilder(builder.Configuration.GetConnectionString("DefaultConnectionUS"));
+// conStrBuilder.Password = builder.Configuration["Password"];
 // * END of String builder calls
 
 // ? Connection string variables
 // * String builder for user-secrets
-var connection = conStrBuilder.ConnectionString;
+// var connection = conStrBuilder.ConnectionString;
 
 // * "DefaultConnectionTrust" for integrated security (Windows)
-// var connection = builder.Configuration.GetConnectionString("DefaultConnectionTrust");
+var connection = builder.Configuration.GetConnectionString("DefaultConnectionTrust");
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connection));
 

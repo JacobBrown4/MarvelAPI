@@ -34,6 +34,7 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpGet("{characterId:int}")]
+        [ProducesResponseType(typeof(CharacterDetail), 200)]
         public async Task<IActionResult> GetCharacterByIdAsync([FromRoute] int characterId) {
             var character = await _service.GetCharacterByIdAsync(characterId);
             if (character == default) {
@@ -43,12 +44,14 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpGet("Abilities/{ability}")]
+        [ProducesResponseType(typeof(CharacterAbilities), 200)]
         public async Task<IActionResult> GetCharactersByAbilityAsync([FromRoute] string ability) {
             var result = await _service.GetCharactersByAbilityAsync(ability);
             return Ok(result);
         }
 
         [HttpGet("Aliases/{aliases}")]
+        [ProducesResponseType(typeof(CharacterAliases), 200)]
         public async Task<IActionResult> GetCharactersByAliasesAsync([FromRoute] string aliases) {
             var result = await _service.GetCharactersByAliasesAsync(aliases);
             return Ok(result);
