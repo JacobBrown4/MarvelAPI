@@ -243,7 +243,7 @@ Delete a character:
 <!-- MOVIES -->
 ### **Movies**
 <br/>
-Create a new character: 
+Create a new movie: 
 
 `POST /api/Movie`
 - Request completed using `Body`
@@ -297,7 +297,7 @@ Get a movie by Id:
 
 <br />
 
-Get a movie by Title:
+Get a movie by title:
 
 `GET /api/Movie/{movieTitle}`
 - Request completed using `Route` *string* movieTitle
@@ -321,7 +321,7 @@ Get a movie by Title:
 
 Update a movie:
 
-`PUT /api/Movie/{movieTitle}`
+`PUT /api/Movie/{movieId}`
 - Request completed using `Route` *int* movieId and `Body`
 
 *Example Request:*
@@ -403,7 +403,7 @@ Get a TV show by Id:
 
 <br />
 
-Get a TV show by Title:
+Get a TV show by title:
 
 `GET /api/TVShow/{tvShowTitle}`
 - Request completed using `Route` *string* tvShowTitle
@@ -428,7 +428,7 @@ Get a TV show by Title:
 
 Update a TV show:
 
-`PUT /api/TVShow/{tvShowTitle}`
+`PUT /api/TVShow/{tvShowId}`
 - Request completed using `Route` *int* tvShowId and `Body`
 
 *Example Request:*
