@@ -77,10 +77,10 @@ namespace MarvelAPI.Services.User
             return userDetail;
         }
 
-        public async Task<bool> UpdateUserAsync(int userId, UserUpdate request)
-        {
+        // public async Task<bool> UpdateUserAsync(int userId, UserUpdate request)
+        // {
 
-        }
+        // }
 
         // public async Task<bool> DeleteUserAsync(int userId)
         // {

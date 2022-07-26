@@ -73,20 +73,20 @@ namespace MarvelAPI.WebAPI.Controllers
             return Ok(userDetail);
         }
 
-        [HttpPut("{userId:int}")]
-        public async Task<IActionResult> UpdateUserAsync([FromRoute] int userId, [FromBody] UserUpdate request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        // [HttpPut("{userId:int}")]
+        // public async Task<IActionResult> UpdateUserAsync([FromRoute] int userId, [FromBody] UserUpdate request)
+        // {
+        //     if (!ModelState.IsValid)
+        //     {
+        //         return BadRequest(ModelState);
+        //     }
 
-            if (await _userService.UpdateUserAsync(userId, request))
-            {
-                return Ok("The user was updated successfully.");
-            }
-            return BadRequest("Sorry, the user could not be updated.");
-        }
+        //     if (await _userService.UpdateUserAsync(userId, request))
+        //     {
+        //         return Ok("The user was updated successfully.");
+        //     }
+        //     return BadRequest("Sorry, the user could not be updated.");
+        // }
 
         // [HttpDelete("{userId:int}")]
         // public async Task<IActionResult> DeleteUserAsync([FromRoute] int userId)
