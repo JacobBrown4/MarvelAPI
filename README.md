@@ -8,7 +8,7 @@
 
 <!-- HEADER -->
 # MarvelAPI Docs
-With this API, you can create and manage character entries in a database of Marvel characters, as well as their appearances on TV and in the MCU<sup>[\[x\]](#resources)</sup>.
+With this API, you can register as a user, then, create and manage character entries in a database of Marvel characters, as well as their appearances on TV and in the MCU<sup>[\[x\]](#resources)</sup>.
 
 <br/>
 <!-- TABLE OF CONTENTS -->
@@ -27,6 +27,7 @@ With this API, you can create and manage character entries in a database of Marv
             <li><a href="#tv-shows">TV Shows</a></li>
             <li><a href="#movie-appearances">Movie Appearances</a></li>
             <li><a href="#tv-show-appearances">TV Show Appearances</a></li>
+            <li><a href="#users">Users</a></li>
         </ul>
     </li>
     <li><a href="#resources">Resources</a></li>
@@ -67,6 +68,12 @@ The command to startup the project should look similar to:
 ``` 
 dotnet run --project .\MarvelAPI.WebAPI\
 ```
+This API utilizes JSON Web Tokens (JWT)<sup>[\[x\]](#resources)</sup> for authentication and authorization. All `GET` endpoints are open access. All other endpoints are restricted to users with authorization. Authorization can be granted in the form of a token. Steps to generating a token are listed below:
+
+1. Create a new user at the `POST /api/User/Register` endpoint.
+
+2. Enter your newly created "Username" and "Password" at the `POST /api/Token` enpoint. If the username and password match a valid user, a new token will be generated. The generated token can then be added to the authorization fields in either Postman or Swagger to gain access to remaining CRUD methods.
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- DATABASE SCHEMA -->
@@ -99,6 +106,14 @@ Here is an overview of the tables:
     - **Id** - `int`
     - **Character ID** - Foreign Key to Characters table
     - **TV Show ID** - Foreign Key to TV Shows table
+- Users
+    - **Id** - `int`
+    - **Email** - `string` (i.e., example@gmail.com)
+    - **Username** - `string` (minimum length of 4 characters)
+    - **Password** - `string` (minimum length of 4 characters)
+    - **First Name** - `string`
+    - **Last Name** - `string`
+    - **Date Created** - `DateTime`
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- SCHEMAS -->
@@ -455,7 +470,7 @@ Delete a TV show:
 
 <br />
 
-Create a movie appearance:
+Create a new movie appearance:
 
 `POST /api/MovieAppearance`
 -  Request completed using `Body`
@@ -534,7 +549,7 @@ Delete a movie appearance:
 
 <br />
 
-Create a TV show appearance:
+Create a new TV show appearance:
 
 `POST /api/TVShowAppearance`
 -  Request completed using `Body`
@@ -606,12 +621,123 @@ Delete a TV show appearance:
 - Request completed using `Route` *int* tvShowAppearanceId
 - Response will be status 200 OK if successful
 
+<br />
+
+<!-- USERS -->
+### **Users**
+
+<br />
+
+Generate a new token:
+
+`POST /api/Token`
+-  Request completed using `Body`
+
+*Example Request:*
+```
+{
+  "username": "string",
+  "password": "string"
+}
+```
+
+<br />
+
+Create a new user:
+
+`POST /api/User/Register`
+-  Request completed using `Body`
+
+*Example Request:*
+```
+{
+  "email": "user@example.com",
+  "username": "string",
+  "password": "string",
+  "confirmPassword": "string"
+}
+```
+
+<br />
+
+Get all users:
+
+`GET /api/User`
+- No request `Route` or `Body` required
+
+*Example Response:*
+```
+[
+  {
+    "id": 0,
+    "username": "string",
+    "email": "string",
+    "firstName": "string",
+    "lastName": "string",
+    "dateCreated": "2022-07-26T17:58:53.980Z"
+  }
+]
+```
+
+<br />
+
+Get a user by Id:
+
+`GET /api/User/{userId}`
+- Request completed using `Route` *int* userId
+
+*Example Response:*
+```
+{
+  "id": 0,
+  "username": "string",
+  "email": "string",
+  "firstName": "string",
+  "lastName": "string",
+  "dateCreated": "2022-07-26T18:01:56.579Z"
+}
+```
+
+<br />
+
+Update a user:
+
+`PUT /api/User/{userId}`
+- Request completed using `Route` *int* userId and `Body`
+
+*Example Request:*
+```
+{
+  "username": "string",
+  "email": "user@example.com",
+  "password": "string",
+  "firstName": "string",
+  "lastName": "string"
+}
+```
+
+<br />
+
+Delete a user:
+
+`DELETE /api/User/{userId}`
+- Request completed using `Route` *int* userId
+- Response will be status 200 OK if successful
+
+<br />
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- RESOURCES -->
 ## Resources
 Below is a list of resources we would like to give credit to as each one played a role in the development of this API.
-- [Postman](https://www.postman.com/)
-- [Swagger](https://swagger.io/)
 - [Marvel](https://www.marvel.com/)
+- [Swagger](https://swagger.io/)
+- [Postman](https://www.postman.com/)
+- [JWT](https://jwt.io/introduction/)
+- [ASP.NET](https://docs.microsoft.com/en-us/aspnet/core/?view=aspnetcore-6.0)
+- [Visual Studio Code](https://code.visualstudio.com/)
+- [GitHub](https://github.com/)
+- [Trello](https://trello.com/)
+- [dbdiagram](https://dbdiagram.io/home)
 <p align="right">(<a href="#top">back to top</a>)</p>
