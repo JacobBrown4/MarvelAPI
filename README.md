@@ -108,7 +108,7 @@ Here is an overview of the tables:
     - **TV Show ID** - Foreign Key to TV Shows table
 - Users
     - **Id** - `int`
-    - **Email** - `string` (i.e., example@gmail.com)
+    - **Email** - `string` (i.e., user@example.com)
     - **Username** - `string` (minimum length of 4 characters)
     - **Password** - `string` (minimum length of 4 characters)
     - **First Name** - `string`
