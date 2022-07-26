@@ -60,7 +60,7 @@ namespace MarvelAPI.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Characters");
+                    b.ToTable("Characters", (string)null);
                 });
 
             modelBuilder.Entity("MarvelAPI.Data.Entities.MovieAppearanceEntity", b =>
@@ -83,7 +83,7 @@ namespace MarvelAPI.Data.Migrations
 
                     b.HasIndex("MovieId");
 
-                    b.ToTable("MovieAppearances");
+                    b.ToTable("MovieAppearances", (string)null);
                 });
 
             modelBuilder.Entity("MarvelAPI.Data.Entities.MoviesEntity", b =>
@@ -103,7 +103,7 @@ namespace MarvelAPI.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Movies");
+                    b.ToTable("Movies", (string)null);
                 });
 
             modelBuilder.Entity("MarvelAPI.Data.Entities.TVShowAppearanceEntity", b =>
@@ -126,7 +126,7 @@ namespace MarvelAPI.Data.Migrations
 
                     b.HasIndex("TVShowId");
 
-                    b.ToTable("TVShowAppearance");
+                    b.ToTable("TVShowAppearance", (string)null);
                 });
 
             modelBuilder.Entity("MarvelAPI.Data.Entities.TVShowsEntity", b =>
@@ -149,7 +149,7 @@ namespace MarvelAPI.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TVShows");
+                    b.ToTable("TVShows", (string)null);
                 });
 
             modelBuilder.Entity("MarvelAPI.Data.Entities.UserEntity", b =>
@@ -183,7 +183,7 @@ namespace MarvelAPI.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("MarvelAPI.Data.Entities.MovieAppearanceEntity", b =>
