@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using MarvelAPI.Services.MoviesService;
 using MarvelAPI.Models.Movies;
 
@@ -15,10 +16,8 @@ namespace MarvelAPI.WebAPI.Controllers
             _service = service;
         }
 
+        [Authorize]
         [HttpPost]
-        // ! Probably do not need this annotation
-        // ! Our response is in the return Ok
-        // [ProducesResponseType(typeof(MovieCreate), 200)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateMoviesAsync([FromBody] MovieCreate model)
@@ -36,9 +35,6 @@ namespace MarvelAPI.WebAPI.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<MovieListItem>),200)]
-        // ! Not sure if we need this annotation, we are already showing a 
-        // ! 200 response in the annotation above
-        // [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllMoviesAsync()
         {
             return Ok(await _service.GetAllMoviesAsync());
@@ -46,9 +42,6 @@ namespace MarvelAPI.WebAPI.Controllers
 
         [HttpGet("{movieId:int}")]
         [ProducesResponseType(typeof(MovieDetail), 200)]
-        // ! Not sure if we need this annotation, we are already showing a 
-        // ! 200 response in the annotation above
-        // [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetMovieByIdAsync([FromRoute] int movieId)
         {
@@ -62,9 +55,6 @@ namespace MarvelAPI.WebAPI.Controllers
 
         [HttpGet("{movieTitle}")]
         [ProducesResponseType(typeof(MovieDetail), 200)]
-        // ! Not sure if we need this annotation, we are already showing a 
-        // ! 200 response in the annotation above
-        // [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetMovieByTitleAsync([FromRoute] string movieTitle)
         {
@@ -76,10 +66,8 @@ namespace MarvelAPI.WebAPI.Controllers
             return Ok(movie);
         }
 
+        [Authorize]
         [HttpPut("{movieId:int}")]
-        // ! Probably do not need this annotation
-        // ! Our response is in the return Ok
-        // [ProducesResponseType(typeof(MovieUpdate), 200)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateMoviesAsync([FromRoute] int movieId, [FromBody] MovieUpdate request)
@@ -95,6 +83,7 @@ namespace MarvelAPI.WebAPI.Controllers
             return BadRequest("Sorry, the movie could not be updated.");
         }
 
+        [Authorize]
         [HttpDelete("{movieId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

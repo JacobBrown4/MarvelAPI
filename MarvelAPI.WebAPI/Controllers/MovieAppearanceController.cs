@@ -1,6 +1,7 @@
 using MarvelAPI.Models.MovieAppearance;
 using MarvelAPI.Services.MovieAppearance;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MarvelAPI.WebAPI.Controllers
 {
@@ -14,6 +15,7 @@ namespace MarvelAPI.WebAPI.Controllers
             _service = service;
         }
 
+        [Authorize]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -40,6 +42,7 @@ namespace MarvelAPI.WebAPI.Controllers
 
         [HttpGet("{movieAppearanceId:int}")]
         [ProducesResponseType(typeof(MovieAppearanceDetail),200)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetMovieAppearanceByIdAsync([FromRoute] int movieAppearanceId)
         {
             var movieAppearance = await _service.GetMovieAppearanceByIdAsync(movieAppearanceId);
@@ -50,9 +53,10 @@ namespace MarvelAPI.WebAPI.Controllers
             return Ok(movieAppearance);
         }
 
+        [Authorize]
         [HttpPut("{movieAppearanceId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateMovieAppearanceAsync([FromRoute] int movieAppearanceId, [FromBody] MovieAppearanceUpdate request)
         {
             if (!ModelState.IsValid)
@@ -66,12 +70,15 @@ namespace MarvelAPI.WebAPI.Controllers
             return BadRequest("Sorry, the movie appearnce could not be updated.");
         }
 
+        [Authorize]
         [HttpDelete("{movieAppearanceId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteMovieAppearanceAsync([FromRoute] int movieAppearanceId)
         {
-            return await _service.DeleteMovieAppearanceAsync(movieAppearanceId) ? Ok($"The movie appearance with ID {movieAppearanceId} was deleted successfully.") : BadRequest($"Sorry, the movie appearance with ID {movieAppearanceId} could not be deleted.");
+            return await _service.DeleteMovieAppearanceAsync(movieAppearanceId) ? 
+            Ok($"The movie appearance with ID {movieAppearanceId} was deleted successfully.") : 
+            BadRequest($"Sorry, the movie appearance with ID {movieAppearanceId} could not be deleted.");
         }
     }
 }

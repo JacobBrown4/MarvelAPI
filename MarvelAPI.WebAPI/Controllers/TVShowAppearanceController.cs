@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using MarvelAPI.Models.TVShowAppearance;
 using MarvelAPI.Services.TVShowAppearance;
 
@@ -14,6 +15,7 @@ namespace MarvelAPI.WebAPI.Controllers
             _service = service;
         }
 
+        [Authorize]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -39,6 +41,7 @@ namespace MarvelAPI.WebAPI.Controllers
 
         [HttpGet("{tvShowAppearanceId:int}")]
         [ProducesResponseType(typeof(TVShowAppearanceDetail),200)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetTVShowAppearanceByIdAsync([FromRoute] int tvShowAppearanceId)
         {
             var tvShowAppearance = await _service.GetTVShowAppearanceByIdAsync(tvShowAppearanceId);
@@ -49,9 +52,10 @@ namespace MarvelAPI.WebAPI.Controllers
             return Ok(tvShowAppearance);
         }
 
+        [Authorize]
         [HttpPut("{tvShowAppearanceId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateTVShowAppearanceAsync([FromRoute] int tvShowAppearanceId, [FromBody] TVShowAppearanceUpdate request)
         {
             if (!ModelState.IsValid)
@@ -65,12 +69,15 @@ namespace MarvelAPI.WebAPI.Controllers
             return BadRequest("Sorry,the movie appearance could not be updated.");
         }
 
+        [Authorize]
         [HttpDelete("{tvShowAppearanceId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteTVShowAppearanceAsync([FromRoute] int tvShowAppearanceId)
         {
-            return await _service.DeleteTVShowAppearanceAsync(tvShowAppearanceId) ? Ok($"The TV show appearance with ID {tvShowAppearanceId} was deleted successfully.") : BadRequest($"Sorry, the TV show appearance with ID {tvShowAppearanceId} could not be deleted.");
+            return await _service.DeleteTVShowAppearanceAsync(tvShowAppearanceId) ? 
+            Ok($"The TV show appearance with ID {tvShowAppearanceId} was deleted successfully.") : 
+            BadRequest($"Sorry, the TV show appearance with ID {tvShowAppearanceId} could not be deleted.");
         }
     }
 }
