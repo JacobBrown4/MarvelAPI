@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using MarvelAPI.Services.User;
 using MarvelAPI.Models.Users;
-using Microsoft.AspNetCore.Authorization;
 using MarvelAPI.Services.Token;
 using MarvelAPI.Models.Token;
 
@@ -25,12 +24,6 @@ namespace MarvelAPI.WebAPI.Controllers
             _tokenService = tokenService;
         }
 
-        // [Authorize]
-        // [HttpGet("{userId:int}")]
-        // public async Task<IActionResult> GetById([FromRoute] int userId) {
-        //     var userDetail = await _userService.GetUserByIdAsync(userId);
-        // }
-
         [HttpPost("~/api/Token")]
         public async Task<IActionResult> Token([FromBody] TokenRequest request) {
             if (!ModelState.IsValid) {
@@ -44,8 +37,6 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpPost("Register")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RegisterUserAsync([FromBody] UserRegister model)
         {
             if (!ModelState.IsValid)
@@ -53,7 +44,7 @@ namespace MarvelAPI.WebAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            var registerResult = await _service.RegisterUserAsync(model);
+            var registerResult = await _userService.RegisterUserAsync(model);
             if (registerResult)
             {
                 return Ok("The user was registered.");
@@ -61,17 +52,18 @@ namespace MarvelAPI.WebAPI.Controllers
             return BadRequest("Sorry, the user could not be registered.");
         }
         
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllUsersAsync() 
         {
-            return Ok(await _service.GetAllUsersAsync());
+            return Ok(await _userService.GetAllUsersAsync());
         }
 
         [Authorize]
         [HttpGet("{userId:int}")]
         public async Task<IActionResult> GetUserByIdAsync([FromRoute] int userId)
         {
-            var userDetail = await _service.GetUserByIdAsync(userId);
+            var userDetail = await _userService.GetUserByIdAsync(userId);
 
             if (userDetail is null)
             {
@@ -81,11 +73,20 @@ namespace MarvelAPI.WebAPI.Controllers
             return Ok(userDetail);
         }
 
-        // [HttpPut("{userId:int}")]
-        // public async Task<IActionResult> UpdateUserAsync([FromRoute] int userId, [FromBody] UserUpdate request)
-        // {
+        [HttpPut("{userId:int}")]
+        public async Task<IActionResult> UpdateUserAsync([FromRoute] int userId, [FromBody] UserUpdate request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        // }
+            if (await _userService.UpdateUserAsync(userId, request))
+            {
+                return Ok("The user was updated successfully.");
+            }
+            return BadRequest("Sorry, the user could not be updated.");
+        }
 
         // [HttpDelete("{userId:int}")]
         // public async Task<IActionResult> DeleteUserAsync([FromRoute] int userId)
