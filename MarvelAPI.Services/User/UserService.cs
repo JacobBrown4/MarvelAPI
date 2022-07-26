@@ -79,13 +79,35 @@ namespace MarvelAPI.Services.User
 
         public async Task<bool> UpdateUserAsync(int userId, UserUpdate request)
         {
+            var user = await _dbContext.Users.FindAsync(userId);
 
+            if (user is null)
+            {
+                return false;
+            }
+
+            user.Username = request.Username;
+            user.Email = request.Email;
+            user.Password = request.Password;
+            user.FirstName = request.FirstName;
+            user.LastName = request.LastName;
+
+            var numberOfChanges = await _dbContext.SaveChangesAsync();
+            return numberOfChanges == 1;
         }
 
-        // public async Task<bool> DeleteUserAsync(int userId)
-        // {
+        public async Task<bool> DeleteUserAsync(int userId)
+        {
+            var user = await _dbContext.Users.FindAsync(userId);
 
-        // }
+            if (user is null)
+            {
+                return false;
+            }
+
+            _dbContext.Users.Remove(user);
+            return await _dbContext.SaveChangesAsync() == 1;
+        }
 
         private async Task<UserEntity> GetUserByEmailAsync(string email)
         {

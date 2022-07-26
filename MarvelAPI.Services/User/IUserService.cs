@@ -8,6 +8,6 @@ namespace MarvelAPI.Services.User
         Task<IEnumerable<UserDetail>> GetAllUsersAsync();
         Task<UserDetail> GetUserByIdAsync(int userId);
         Task<bool> UpdateUserAsync(int userId, UserUpdate request);
-        // Task<bool> DeleteUserAsync(int userId);
+        Task<bool> DeleteUserAsync(int userId);
     }
 }
