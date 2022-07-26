@@ -4,6 +4,10 @@ namespace MarvelAPI.Data.Entities
 {
     public class TeamEntity
     {
+        public TeamEntity() {
+            Members = new List<TeamMembershipEntity>();
+        }
+
         public int Id { get; set; }
 
         [Required]
@@ -12,7 +16,7 @@ namespace MarvelAPI.Data.Entities
         public string Authority { get; set; }
 
         public string Alignment { get; set; }
-
-        public virtual IEnumerable<CharacterEntity> Members { get; set; }
+        
+        public virtual IEnumerable<TeamMembershipEntity> Members { get; set; }
     }
 }
