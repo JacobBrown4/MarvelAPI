@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using MarvelAPI.Models.TVShows;
 using MarvelAPI.Services.TVShowsService;
 
@@ -15,10 +16,8 @@ namespace MarvelAPI.WebAPI.Controllers
             _service = service;
         }
 
+        [Authorize]
         [HttpPost]
-        // ! Probably do not need this annotation
-        // ! Our response is in the return Ok
-        // [ProducesResponseType(typeof(TVShowCreate), 200)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateTvShowAsync([FromBody] TVShowCreate model)
@@ -36,9 +35,6 @@ namespace MarvelAPI.WebAPI.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<TVShowListItem>), 200)]
-        // ! Not sure if we need this annotation, we are already showing a 
-        // ! 200 response in the annotation above
-        // [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllTVShowsAsync()
         {
             return Ok(await _service.GetAllTVShowsAsync());
@@ -46,9 +42,6 @@ namespace MarvelAPI.WebAPI.Controllers
 
         [HttpGet("{tvShowId:int}")]
         [ProducesResponseType(typeof(TVShowDetail), 200)]
-        // ! Not sure if we need this annotation, we are already showing a 
-        // ! 200 response in the annotation above
-        // [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetTVShowByIdAsync([FromRoute] int tvShowId)
         {
@@ -62,9 +55,6 @@ namespace MarvelAPI.WebAPI.Controllers
 
         [HttpGet("{tvShowTitle}")]
         [ProducesResponseType(typeof(TVShowDetail), 200)]
-        // ! Not sure if we need this annotation, we are already showing a 
-        // ! 200 response in the annotation above
-        // [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetTVShowByTitleAsync([FromRoute] string tvShowTitle)
         {
@@ -76,11 +66,8 @@ namespace MarvelAPI.WebAPI.Controllers
             return Ok(tvShow);
         }
 
-
+        [Authorize]
         [HttpPut("{tvShowId:int}")]
-        // ! Probably do not need this annotation
-        // ! Our response is in the return Ok
-        // [ProducesResponseType(typeof(TVShowDetail), 200)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateTVShowAsync([FromRoute] int tvShowId, [FromBody] TVShowUpdate request)
@@ -96,6 +83,7 @@ namespace MarvelAPI.WebAPI.Controllers
             return BadRequest("Sorry, the TV show could not be updated.");
         }
 
+        [Authorize]
         [HttpDelete("{tvShowId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

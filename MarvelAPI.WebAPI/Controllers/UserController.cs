@@ -52,14 +52,12 @@ namespace MarvelAPI.WebAPI.Controllers
             return BadRequest("Sorry, the user could not be registered.");
         }
         
-        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllUsersAsync() 
         {
             return Ok(await _userService.GetAllUsersAsync());
         }
 
-        [Authorize]
         [HttpGet("{userId:int}")]
         public async Task<IActionResult> GetUserByIdAsync([FromRoute] int userId)
         {
@@ -73,6 +71,7 @@ namespace MarvelAPI.WebAPI.Controllers
             return Ok(userDetail);
         }
 
+        [Authorize]
         [HttpPut("{userId:int}")]
         public async Task<IActionResult> UpdateUserAsync([FromRoute] int userId, [FromBody] UserUpdate request)
         {
@@ -88,6 +87,7 @@ namespace MarvelAPI.WebAPI.Controllers
             return BadRequest("Sorry, the user could not be updated.");
         }
 
+        [Authorize]
         [HttpDelete("{userId:int}")]
         public async Task<IActionResult> DeleteUserAsync([FromRoute] int userId)
         {
