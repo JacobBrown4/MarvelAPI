@@ -25,7 +25,7 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpPost("~/api/Token")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(TokenResponse), 200)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Token([FromBody] TokenRequest request) {
             if (!ModelState.IsValid) {
@@ -88,12 +88,9 @@ namespace MarvelAPI.WebAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            if (await _userService.UpdateUserAsync(userId, request))
-            {
-                return Ok("The user was updated successfully.");
-            }
-            return BadRequest("Sorry, the user could not be updated.");
+                return await _userService.UpdateUserAsync(userId, request) ?
+                Ok("The user was updated successfully.") : 
+                BadRequest("Sorry, the user could not be updated.");
         }
 
         [Authorize]
