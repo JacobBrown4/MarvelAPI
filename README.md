@@ -24,8 +24,10 @@ With this API, you can register as a user, then, create and manage character ent
         <ul>
             <li><a href="#characters">Characters</a></li>
             <li><a href="#movies">Movies</a></li>
-            <li><a href="#tv-shows">TV Shows</a></li>
             <li><a href="#movie-appearances">Movie Appearances</a></li>
+            <li><a href="#team-membership">Team Membership</a></li>
+            <li><a href="#teams">Teams</a></li>
+            <li><a href="#tv-shows">TV Shows</a></li>
             <li><a href="#tv-show-appearances">TV Show Appearances</a></li>
             <li><a href="#users">Users</a></li>
         </ul>
@@ -52,7 +54,6 @@ To clone the repository, run this command in your terminal:
 git clone https://github.com/zdearmin/MarvelAPI.git
 ```
 
-For interacting with your database, the project includes an implementation of Swagger<sup>[\[x\]](#resources)</sup> to run queries from within your browser. Alternatively, Postman<sup>[\[x\]](#resources)</sup> is a recommended platform that allows you to save multiple customized queries.
 
 With your server running, you can execute the following command to create the database and tables. If your current working directory is the same as the folder with the `.git` file, your command should look like below:
 ```
@@ -68,6 +69,16 @@ The command to startup the project should look similar to:
 ``` 
 dotnet run --project .\MarvelAPI.WebAPI\
 ```
+
+For interacting with your database, the project includes an implementation of Swagger<sup>[\[x\]](#resources)</sup> to run queries from within your browser. To run Swagger, post the text below into your browser, and adjust the port number to match what is shown on your local device.
+```
+https://localhost:[EnterPortHere]/swagger
+```
+
+Alternatively, Postman<sup>[\[x\]](#resources)</sup> is a recommended platform that allows you to save multiple customized queries. Click the button below to get the data framework for this collection. Then, import that data into your desired Postman workspace to create the MarvelAPI collection.
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.getpostman.com/collections/cbf3cd1fb5072b651a23)
+
 This API utilizes JSON Web Tokens (JWT)<sup>[\[x\]](#resources)</sup> for authentication and authorization. All `GET` endpoints are open access. All other endpoints are restricted to users with authorization. Authorization can be granted in the form of a token. Steps to generating a token are listed below:
 
 1. Create a new user at the `POST /api/User/Register` endpoint.
@@ -93,27 +104,37 @@ Here is an overview of the tables:
     - **Id** - `int`
     - **Title** - `string`
     - **Release Year** - `int`
+- Movie Appearances
+    - **Id** - `int`
+    - **Character Id** - Foreign Key to Characters table
+    - **Movie Id** - Foreign Key to Movies table
+- Team Memberships
+    - **Id** - `int`
+    - **Team Id** - Foreign Key to Teams table
+    - **Member Id** - Foreign Key to Characters table
+- Teams
+    - **Id** - `int`
+    - **Name** - `string`
+    - **Authority** - `string`
+    - **Alignment** - `string`
 - TV Shows
     - **Id** - `int`
     - **Title** - `string`
     - **Release Year** - `int`
     - **Number of Seasons** - `int`
-- Movie Appearances
-    - **Id** - `int`
-    - **Character ID** - Foreign Key to Characters table
-    - **Movie ID** - Foreign Key to Movies table
 - TV Show Appearances
     - **Id** - `int`
-    - **Character ID** - Foreign Key to Characters table
-    - **TV Show ID** - Foreign Key to TV Shows table
+    - **Character Id** - Foreign Key to Characters table
+    - **TV Show Id** - Foreign Key to TV Shows table
 - Users
     - **Id** - `int`
-    - **Email** - `string` (i.e., example@gmail.com)
+    - **Email** - `string` (i.e., user@example.com)
     - **Username** - `string` (minimum length of 4 characters)
     - **Password** - `string` (minimum length of 4 characters)
     - **First Name** - `string`
     - **Last Name** - `string`
     - **Date Created** - `DateTime`
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- SCHEMAS -->
@@ -357,6 +378,247 @@ Delete a movie:
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+<!-- MOVIE APPEARANCES -->
+### **Movie Appearances**
+
+<br />
+
+Create a new movie appearance:
+
+`POST /api/MovieAppearance`
+-  Request completed using `Body`
+
+*Example Request:*
+```
+{
+  "characterId": 0,
+  "movieId": 0
+}
+```
+
+<br />
+
+Get all movie appearances:
+
+`GET /api/MovieAppearance`
+- No request `Route` or `Body` required
+
+*Example Response:*
+```
+[
+  {
+    "id": 0,
+    "character": "string",
+    "movie": "string"
+  }
+]
+```
+
+<br />
+
+Get a movie appearance by Id:
+
+`GET /api/MovieAppearance/{movieAppearanceId}`
+- Request completed using `Route` *int* movieAppearanceId
+
+*Example Response:*
+```
+{
+  "id": 0,
+  "characterId": 0,
+  "character": "string",
+  "movieId": 0,
+  "movie": "string"
+}
+```
+
+<br />
+
+Update a movie appearance:
+
+`PUT /api/MovieAppearance/{movieAppearanceId}`
+- Request completed using `Route` *int* movieAppearanceId and `Body`
+
+*Example Request:*
+```
+{
+  "characterId": 0,
+  "movieId": 0
+}
+```
+
+<br />
+
+Delete a movie appearance:
+
+`DELETE /api/MovieAppearance/{movieAppearanceId}`
+- Request completed using `Route` *int* movieAppearanceId
+- Response will be status 200 OK if successful
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- TEAM MEMBERSHIP -->
+### **Team Membership**
+
+<br/>
+
+Create a new team membership: 
+
+`POST /api/TeamMembership`
+- Request completed using `Body`
+
+*Example Request:*
+```
+{
+  "teamId": 0,
+  "memberId": 0
+}
+```
+<br />
+
+Get all team memberships:
+
+`GET /api/TeamMembership`
+- No request `Route` or `Body` required
+
+*Example Response:*
+```
+[
+  {
+    "id": 0,
+    "teamId": 0,
+    "memberId": 0
+  }
+]
+```
+
+<br />
+
+Get a team membership by Id:
+
+`GET /api/TeamMembership/{teamMembershipId}`
+- Request completed using `Route` *int* teamMembershipId
+
+*Example Response:*
+
+```
+{
+  "id": 0,
+  "teamId": 0,
+  "memberId": 0,
+  "team": "string",
+  "member": "string"
+}
+```
+
+<br />
+
+Update a team membership:
+
+`PUT /api/TeamMembership/{teamMembershipId}`
+- Request completed using `Route` *int* teamMembershipId and `Body`
+
+*Example Request:*
+```
+{
+  "teamId": 0,
+  "memberId": 0
+}
+```
+
+<br />
+
+Delete a team membership:
+
+`DELETE /api/TeamMembership/{teamMembershipId}`
+- Request completed using `Route` *int* teamMembershipId
+- Response will be status 200 OK if successful
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- TEAMS -->
+### **Teams**
+
+<br/>
+
+Create a new team: 
+
+`POST /api/Teams`
+- Request completed using `Body`
+
+*Example Request:*
+```
+{
+  "name": "string"
+}
+```
+<br />
+
+Get all teams:
+
+`GET /api/Teams`
+- No request `Route` or `Body` required
+
+*Example Response:*
+```
+[
+  {
+    "id": 0,
+    "name": "string"
+  }
+]
+```
+
+<br />
+
+Get a team by Id:
+
+`GET /api/Teams/{teamId}`
+- Request completed using `Route` *int* teamId
+
+*Example Response:*
+
+```
+{
+  "id": 0,
+  "name": "string",
+  "authority": "string",
+  "alignment": "string",
+  "members": [
+    {
+      "id": 0,
+      "fullName": "string"
+    }
+  ]
+}
+```
+
+<br />
+
+Update a team:
+
+`PUT /api/Teams/{teamId}`
+- Request completed using `Route` *int* teamId and `Body`
+
+*Example Request:*
+```
+{
+  "name": "string",
+  "authority": "string",
+  "alignment": "string"
+}
+```
+
+<br />
+
+Delete a team:
+
+`DELETE /api/Teams/{teamId}`
+- Request completed using `Route` *int* teamId
+- Response will be status 200 OK if successful
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 <!-- TV SHOWS -->
 ### **TV Shows**
 
@@ -465,84 +727,6 @@ Delete a TV show:
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-<!-- MOVIE APPEARANCES -->
-### **Movie Appearances**
-
-<br />
-
-Create a new movie appearance:
-
-`POST /api/MovieAppearance`
--  Request completed using `Body`
-
-*Example Request:*
-```
-{
-  "characterId": 0,
-  "movieId": 0
-}
-```
-
-<br />
-
-Get all movie appearances:
-
-`GET /api/MovieAppearance`
-- No request `Route` or `Body` required
-
-*Example Response:*
-```
-[
-  {
-    "id": 0,
-    "character": "string",
-    "movie": "string"
-  }
-]
-```
-
-<br />
-
-Get a movie appearance by Id:
-
-`GET /api/MovieAppearance/{movieAppearanceId}`
-- Request completed using `Route` *int* movieAppearanceId
-
-*Example Response:*
-```
-{
-  "id": 0,
-  "characterId": 0,
-  "character": "string",
-  "movieId": 0,
-  "movie": "string"
-}
-```
-
-<br />
-
-Update a movie appearance:
-
-`PUT /api/MovieAppearance/{movieAppearanceId}`
-- Request completed using `Route` *int* movieAppearanceId and `Body`
-
-*Example Request:*
-```
-{
-  "characterId": 0,
-  "movieId": 0
-}
-```
-
-<br />
-
-Delete a movie appearance:
-
-`DELETE /api/MovieAppearance/{movieAppearanceId}`
-- Request completed using `Route` *int* movieAppearanceId
-- Response will be status 200 OK if successful
-
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- TV SHOW APPEARANCES -->
 ### **TV Show Appearances**
@@ -622,6 +806,8 @@ Delete a TV show appearance:
 - Response will be status 200 OK if successful
 
 <br />
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- USERS -->
 ### **Users**
