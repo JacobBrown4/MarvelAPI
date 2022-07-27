@@ -2,6 +2,7 @@ using MarvelAPI.Data;
 using MarvelAPI.Data.Entities;
 using MarvelAPI.Models.Characters;
 using MarvelAPI.Models.Movies;
+using MarvelAPI.Models.Teams;
 using MarvelAPI.Models.TVShows;
 using Microsoft.EntityFrameworkCore;
 
@@ -95,6 +96,13 @@ namespace MarvelAPI.Services.Character
                 }
             );
             
+            var characterTeams = characterFound.Teams.Select(
+                tm => new TeamListItem{
+                    Id = tm.Id,
+                    Name = tm.Team.Name
+                }
+            );
+
             var result = new CharacterDetail{
                 Id = characterFound.Id,
                 FullName = characterFound.FullName,
@@ -106,7 +114,8 @@ namespace MarvelAPI.Services.Character
                 Aliases = characterFound.Aliases,
                 Status = characterFound.Status,
                 Movies = characterMovies.ToList(),
-                TVShows = characterTVShows.ToList()
+                TVShows = characterTVShows.ToList(),
+                Teams = characterTeams.ToList()
             };
 
             return result;
