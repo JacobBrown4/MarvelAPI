@@ -8,6 +8,7 @@ namespace MarvelAPI.Data.Entities
             Members = new List<TeamMembershipEntity>();
         }
 
+        [Key]
         public int Id { get; set; }
 
         [Required]

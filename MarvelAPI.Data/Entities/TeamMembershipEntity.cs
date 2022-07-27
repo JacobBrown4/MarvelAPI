@@ -10,6 +10,7 @@ namespace MarvelAPI.Data.Entities
             Member = new CharacterEntity();
         }
 
+        [Key]
         public int Id { get; set; }
 
         [Required]

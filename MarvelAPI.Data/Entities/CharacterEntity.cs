@@ -5,9 +5,9 @@ namespace MarvelAPI.Data.Entities
     public class CharacterEntity
     {
         public CharacterEntity() {
-            Movies = new List<MoviesEntity>();
-            TVShows = new List<TVShowsEntity>();
-            Teams = new List<TeamEntity>();
+            Movies = new List<MovieAppearanceEntity>();
+            TVShows = new List<TVShowAppearanceEntity>();
+            Teams = new List<TeamMembershipEntity>();
         }
 
         [Key]
@@ -28,10 +28,10 @@ namespace MarvelAPI.Data.Entities
         public string Aliases { get; set; }
         public string Status { get; set; }
 
-        public virtual IEnumerable<MoviesEntity> Movies { get; set; }
+        public virtual IEnumerable<MovieAppearanceEntity> Movies { get; set; }
 
-        public virtual IEnumerable<TVShowsEntity> TVShows { get; set; }
+        public virtual IEnumerable<TVShowAppearanceEntity> TVShows { get; set; }
 
-        public virtual IEnumerable<TeamEntity> Teams { get; set; }
+        public virtual IEnumerable<TeamMembershipEntity> Teams { get; set; }
     }
 }

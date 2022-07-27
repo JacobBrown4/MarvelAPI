@@ -15,6 +15,6 @@ namespace MarvelAPI.Data.Entities
 
         public int? ReleaseYear { get; set; }
 
-        public IEnumerable<MovieAppearanceEntity> Appearances { get; set; }
+        public virtual IEnumerable<MovieAppearanceEntity> Appearances { get; set; }
     }
 }
