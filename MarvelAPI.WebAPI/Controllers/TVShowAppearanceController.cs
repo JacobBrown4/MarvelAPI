@@ -66,7 +66,7 @@ namespace MarvelAPI.WebAPI.Controllers
             {
                 return Ok("The TV show appearance has been updated successfully.");
             }
-            return BadRequest("Sorry,the movie appearance could not be updated.");
+            return BadRequest("Sorry,the TV show appearance could not be updated.");
         }
 
         [Authorize]

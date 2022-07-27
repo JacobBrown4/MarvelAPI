@@ -7,6 +7,7 @@ using MarvelAPI.Services.MoviesService;
 using MarvelAPI.Services.TVShowsService;
 using MarvelAPI.Services.TVShowAppearance;
 using MarvelAPI.Services.Teams;
+using MarvelAPI.Services.TeamMembership;
 using MarvelAPI.Services.User;
 using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -44,6 +45,7 @@ builder.Services.AddScoped<ITVShowAppearanceService, TVShowAppearanceService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ITeamsService, TeamsService>();
+builder.Services.AddScoped<ITeamMembershipService, TeamMembershipService>();
 
 builder.Services.AddAuthentication
     (

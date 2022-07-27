@@ -1,6 +1,3 @@
-using MarvelAPI.Models.Characters;
-using MarvelAPI.Models.Teams;
-
 namespace MarvelAPI.Models.TeamMemberships
 {
     public class TeamMembershipDetail
@@ -11,8 +8,8 @@ namespace MarvelAPI.Models.TeamMemberships
 
         public int MemberId { get; set; }
 
-        public TeamListItem Team { get; set; }
+        public string Team { get; set; }
 
-        public CharacterListItem Member { get; set; }
+        public string Member { get; set; }
     }
 }
