@@ -30,7 +30,10 @@ var connection = conStrBuilder.ConnectionString;
 // * "DefaultConnectionTrust" for integrated security (Windows)
 // var connection = builder.Configuration.GetConnectionString("DefaultConnectionTrust");
 
+
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connection));
+
+builder.Services.AddHttpContextAccessor();
 
 // Add Services/Interfaces for Dependency Injection here
 builder.Services.AddScoped<IMovieAppearanceService, MovieAppearanceService>();
