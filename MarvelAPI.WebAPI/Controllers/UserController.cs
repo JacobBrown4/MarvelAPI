@@ -25,6 +25,8 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpPost("~/api/Token")]
+        [ProducesResponseType(typeof(TokenResponse), 200)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Token([FromBody] TokenRequest request) {
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
@@ -37,6 +39,8 @@ namespace MarvelAPI.WebAPI.Controllers
         }
 
         [HttpPost("Register")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RegisterUserAsync([FromBody] UserRegister model)
         {
             if (!ModelState.IsValid)
@@ -53,12 +57,15 @@ namespace MarvelAPI.WebAPI.Controllers
         }
         
         [HttpGet]
+        [ProducesResponseType(typeof(UserDetail), 200)]
         public async Task<IActionResult> GetAllUsersAsync() 
         {
             return Ok(await _userService.GetAllUsersAsync());
         }
 
         [HttpGet("{userId:int}")]
+        [ProducesResponseType(typeof(UserDetail), 200)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetUserByIdAsync([FromRoute] int userId)
         {
             var userDetail = await _userService.GetUserByIdAsync(userId);
@@ -73,22 +80,23 @@ namespace MarvelAPI.WebAPI.Controllers
 
         [Authorize]
         [HttpPut("{userId:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateUserAsync([FromRoute] int userId, [FromBody] UserUpdate request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            if (await _userService.UpdateUserAsync(userId, request))
-            {
-                return Ok("The user was updated successfully.");
-            }
-            return BadRequest("Sorry, the user could not be updated.");
+                return await _userService.UpdateUserAsync(userId, request) ?
+                Ok("The user was updated successfully.") : 
+                BadRequest("Sorry, the user could not be updated.");
         }
 
         [Authorize]
         [HttpDelete("{userId:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteUserAsync([FromRoute] int userId)
         {
             return await _userService.DeleteUserAsync(userId) ?

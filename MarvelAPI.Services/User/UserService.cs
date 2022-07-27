@@ -3,14 +3,25 @@ using MarvelAPI.Data;
 using MarvelAPI.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace MarvelAPI.Services.User
 {
     public class UserService : IUserService
     {
+        private readonly int _userId;
         private readonly AppDbContext _dbContext;
-        public UserService(AppDbContext dbContext)
+        public UserService(IHttpContextAccessor httpContextAccessor, AppDbContext dbContext)
         {
+            var userClaims = httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
+            var value = userClaims.FindFirst("Id")?.Value;
+            var validId = int.TryParse(value, out _userId);
+            if (!validId)
+            {
+                throw new Exception("Attempted to build UserService without User Id claim.");
+            }
+
             _dbContext = dbContext;
         }
         public async Task<bool> RegisterUserAsync(UserRegister model)
@@ -81,7 +92,7 @@ namespace MarvelAPI.Services.User
         {
             var user = await _dbContext.Users.FindAsync(userId);
 
-            if (user is null)
+            if (user is null || user?.Id != _userId)
             {
                 return false;
             }
@@ -100,7 +111,7 @@ namespace MarvelAPI.Services.User
         {
             var user = await _dbContext.Users.FindAsync(userId);
 
-            if (user is null)
+            if (user is null || user?.Id != _userId)
             {
                 return false;
             }

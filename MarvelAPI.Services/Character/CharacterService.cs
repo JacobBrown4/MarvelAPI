@@ -1,9 +1,8 @@
 using MarvelAPI.Data;
 using MarvelAPI.Data.Entities;
 using MarvelAPI.Models.Characters;
-using MarvelAPI.Models.MovieAppearance;
 using MarvelAPI.Models.Movies;
-using MarvelAPI.Models.TVShowAppearance;
+using MarvelAPI.Models.Teams;
 using MarvelAPI.Models.TVShows;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,7 +24,7 @@ namespace MarvelAPI.Services.Character
             };
             // Verify no duplicates by FullName (formatting for comparison)
             foreach (var c in await _dbContext.Characters.ToListAsync()) {
-                if (ReformatFullName(c.FullName) == ReformatFullName(character.FullName)) {
+                if (ReformatName(c.FullName) == ReformatName(character.FullName)) {
                     return false;
                 }
             }
@@ -82,46 +81,28 @@ namespace MarvelAPI.Services.Character
         public async Task<CharacterDetail> GetCharacterByIdAsync(int id)
         {
             var characterFound = await _dbContext.Characters.FindAsync(id);
-            var characterMovies = await _dbContext.MovieAppearances
-                .Select(
-                    ma => new MovieAppearanceDetail{
-                        Id = ma.Id,
-                        Character = ma.Character.FullName,
-                        CharacterId = ma.CharacterId,
-                        Movie = ma.Movie.Title,
-                        MovieId = ma.MovieId
-                })
-                .Where(
-                    o => o.CharacterId == characterFound.Id
-                )
-                .Select(
-                    mad => new MovieListItem{
-                        Id = mad.MovieId,
-                        Title = mad.Movie
-                    }
-                )
-                .ToListAsync();
             
-            var characterTVShows = await _dbContext.TVShowAppearance
-                .Select(
-                    tvsa => new TVShowAppearanceDetail{
-                        Id = tvsa.Id,
-                        TVShowId = tvsa.TVShowId,
-                        CharacterId = tvsa.CharacterId,
-                        TVShow = tvsa.TVShow.Title,
-                        Character = tvsa.Character.FullName
-                })
-                .Where(
-                    o => o.CharacterId == characterFound.Id
-                )
-                .Select(
-                    tvsad => new TVShowListItem{
-                        Id = tvsad.TVShowId,
-                        Title = tvsad.TVShow
-                    }
-                )
-                .ToListAsync();
+            var characterMovies = characterFound.Movies.Select(
+                m => new MovieListItem{
+                    Id = m.Id,
+                    Title = m.Movie.Title
+                }
+            );
+
+            var characterTVShows = characterFound.TVShows.Select(
+                t => new TVShowListItem{
+                    Id = t.Id,
+                    Title = t.TVShow.Title
+                }
+            );
             
+            var characterTeams = characterFound.Teams.Select(
+                tm => new TeamListItem{
+                    Id = tm.Id,
+                    Name = tm.Team.Name
+                }
+            );
+
             var result = new CharacterDetail{
                 Id = characterFound.Id,
                 FullName = characterFound.FullName,
@@ -132,9 +113,11 @@ namespace MarvelAPI.Services.Character
                 AbilitiesOrigin = characterFound.AbilitiesOrigin,
                 Aliases = characterFound.Aliases,
                 Status = characterFound.Status,
-                Movies = characterMovies,
-                TVShows = characterTVShows
+                Movies = characterMovies.ToList(),
+                TVShows = characterTVShows.ToList(),
+                Teams = characterTeams.ToList()
             };
+
             return result;
         }
 
@@ -163,11 +146,7 @@ namespace MarvelAPI.Services.Character
             return await _dbContext.SaveChangesAsync() == 1;
         }
 
-        private string ReformatFullName(string name) {
-            // Returns a reformatted version of a CharacterEntity's FullName,
-            // to be more easily compared against others formatted the same way.
-
-            // If there is a space/hyphen in the name, ignore it in the result to return
+        private string ReformatName(string name) {
             var result = String.Concat(name.Split(' ', '-')).ToLower();
             return result;
         }

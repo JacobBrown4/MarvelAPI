@@ -6,6 +6,8 @@ using MarvelAPI.Services.Character;
 using MarvelAPI.Services.MoviesService;
 using MarvelAPI.Services.TVShowsService;
 using MarvelAPI.Services.TVShowAppearance;
+using MarvelAPI.Services.Teams;
+using MarvelAPI.Services.TeamMembership;
 using MarvelAPI.Services.User;
 using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -29,7 +31,10 @@ var builder = WebApplication.CreateBuilder(args);
 // * "DefaultConnectionTrust" for integrated security (Windows)
 var connection = builder.Configuration.GetConnectionString("DefaultConnectionTrust");
 
+
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connection));
+
+builder.Services.AddHttpContextAccessor();
 
 // Add Services/Interfaces for Dependency Injection here
 builder.Services.AddScoped<IMovieAppearanceService, MovieAppearanceService>();
@@ -39,6 +44,8 @@ builder.Services.AddScoped<ITVShowService, TVShowService>();
 builder.Services.AddScoped<ITVShowAppearanceService, TVShowAppearanceService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ITeamsService, TeamsService>();
+builder.Services.AddScoped<ITeamMembershipService, TeamMembershipService>();
 
 builder.Services.AddAuthentication
     (
