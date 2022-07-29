@@ -47,6 +47,7 @@ namespace MarvelAPI.Services.MovieAppearance
         public async Task<MovieAppearanceDetail> GetMovieAppearanceByIdAsync(int movieAppearanceId)
         {
             var movieAppearance = await _dbContext.MovieAppearances
+            .Where(x=>x.Id == movieAppearanceId)
             .Select(
                 x => new MovieAppearanceDetail
                 {
@@ -56,9 +57,6 @@ namespace MarvelAPI.Services.MovieAppearance
                     MovieId = x.MovieId,
                     Movie = x.Movie.Title
                 }
-            )
-            .Where(
-                x => x.Id == movieAppearanceId
             )
             .FirstOrDefaultAsync();
             return movieAppearance;

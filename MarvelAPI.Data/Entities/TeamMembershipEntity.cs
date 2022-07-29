@@ -5,11 +5,6 @@ namespace MarvelAPI.Data.Entities
 {
     public class TeamMembershipEntity
     {
-        public TeamMembershipEntity() {
-            Team = new TeamEntity();
-            Member = new CharacterEntity();
-        }
-
         [Key]
         public int Id { get; set; }
 

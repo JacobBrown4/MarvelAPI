@@ -5,10 +5,6 @@ namespace MarvelAPI.Data.Entities
 {
     public class MovieAppearanceEntity
     {
-        public MovieAppearanceEntity() {
-            Movie = new MoviesEntity();
-            Character = new CharacterEntity();
-        }
 
         [Key]
         public int Id { get; set; }

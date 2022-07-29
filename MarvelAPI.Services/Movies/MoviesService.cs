@@ -47,89 +47,34 @@ namespace MarvelAPI.Services.MoviesService
 
         public async Task<MovieDetail> GetMovieByIdAsync(int movieId)
         {
-            var movieFound = await _dbContext.Movies.FindAsync(movieId);
+            var movieFound = await _dbContext.Movies.Include(x=>x.Appearances).ThenInclude(y=>y.Character).FirstOrDefaultAsync(m=>m.Id == movieId);
 
-            var movieCharacters = await _dbContext.MovieAppearances
-            .Select(
-                ma => new MovieAppearanceDetail
-                {
-                    Id = ma.Id,
-                    CharacterId = ma.Character.Id,
-                    Character = ma.Character.FullName,
-                    MovieId = ma.Movie.Id,
-                    Movie = ma.Movie.Title
-                }
-            )
-            .Where(
-                m => m.Movie == movieFound.Title
-            )
-            .Select(
-                cli => new CharacterListItem
-                {
-                    Id = cli.CharacterId,
-                    FullName = cli.Character
-                }
-            )
-            .ToListAsync();
-
-            var result = new MovieDetail
+            return new MovieDetail
             {
                 Id = movieFound.Id,
                 Title = movieFound.Title,
                 ReleaseYear = (int)movieFound.ReleaseYear,
-                Characters = movieCharacters
+                Characters = movieFound.Appearances.Select(c=> new CharacterListItem{
+                    Id = c.CharacterId,
+                    FullName = c.Character.FullName
+                }).ToList()
             };
-            return result;
         }
 
         public async Task<MovieDetail> GetMovieByTitleAsync(string movieTitle)
         {
-            var movieFound = await _dbContext.Movies
-            .Select(
-                mf => new MovieDetail
-                {
-                    Id = mf.Id,
-                    Title = mf.Title,
-                    // added ReleaseYear because otherwise would return 0
-                    ReleaseYear = (int)mf.ReleaseYear
-                }
-            )
-            .Where(
-                m => m.Title == movieTitle
-            )
-            .FirstOrDefaultAsync();
+            var movieFound = await _dbContext.Movies.Include(x=>x.Appearances).ThenInclude(y=>y.Character).FirstOrDefaultAsync(m=>m.Title.ToLower().Contains(movieTitle.ToLower()));
 
-            var movieCharacters = await _dbContext.MovieAppearances
-            .Select(
-                ma => new MovieAppearanceDetail
-                {
-                    Id = ma.Id,
-                    CharacterId = ma.Character.Id,
-                    Character = ma.Character.FullName,
-                    MovieId = ma.Movie.Id,
-                    Movie = ma.Movie.Title
-                }
-            )
-            .Where(
-                m => m.Movie == movieFound.Title
-            )
-            .Select(
-                cli => new CharacterListItem
-                {
-                    Id = cli.CharacterId,
-                    FullName = cli.Character
-                }
-            )
-            .ToListAsync();
-
-            var result = new MovieDetail
+            return new MovieDetail
             {
                 Id = movieFound.Id,
                 Title = movieFound.Title,
                 ReleaseYear = (int)movieFound.ReleaseYear,
-                Characters = movieCharacters
+                Characters = movieFound.Appearances.Select(c=> new CharacterListItem{
+                    Id = c.CharacterId,
+                    FullName = c.Character.FullName
+                }).ToList()
             };
-            return result;
         }
 
         public async Task<bool> UpdateMoviesAsync(int movieId, MovieUpdate request)

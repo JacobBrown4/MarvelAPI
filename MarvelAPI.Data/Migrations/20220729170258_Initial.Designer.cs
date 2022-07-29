@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MarvelAPI.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220727133157_AddTeams")]
-    partial class AddTeams
+    [Migration("20220729170258_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

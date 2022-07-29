@@ -11,20 +11,23 @@ namespace MarvelAPI.Services.Character
     public class CharacterService : ICharacterService
     {
         private readonly AppDbContext _dbContext;
-        public CharacterService (AppDbContext dbContext)
+        public CharacterService(AppDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
         public async Task<bool> CreateCharacterAsync(CharacterCreate model)
         {
-            var character = new CharacterEntity{
+            var character = new CharacterEntity
+            {
                 FullName = model.FullName,
                 Age = model.Age
             };
             // Verify no duplicates by FullName (formatting for comparison)
-            foreach (var c in await _dbContext.Characters.ToListAsync()) {
-                if (ReformatName(c.FullName) == ReformatName(character.FullName)) {
+            foreach (var c in await _dbContext.Characters.ToListAsync())
+            {
+                if (ReformatName(c.FullName) == ReformatName(character.FullName))
+                {
                     return false;
                 }
             }
@@ -37,42 +40,47 @@ namespace MarvelAPI.Services.Character
         {
             var result = await _dbContext.Characters
                 .Select(
-                    c => new CharacterListItem{
+                    c => new CharacterListItem
+                    {
                         Id = c.Id,
                         FullName = c.FullName
-                })
+                    })
                 .ToListAsync();
             return result;
         }
 
-        public async Task<IEnumerable<CharacterAbilities>> GetCharactersByAbilityAsync(string ability) {
+        public async Task<IEnumerable<CharacterAbilities>> GetCharactersByAbilityAsync(string ability)
+        {
             var result = await _dbContext.Characters
+                .Where(
+                    o => o.Abilities != null &&
+                    o.Abilities.ToLower().Contains(ability.ToLower())
+                )
                 .Select(
-                    c => new CharacterAbilities{
+                    c => new CharacterAbilities
+                    {
                         Id = c.Id,
                         FullName = c.FullName,
                         Abilities = c.Abilities
-                })
-                .Where(
-                    o => o.Abilities != null && 
-                    o.Abilities.ToLower().Contains(ability.ToLower())
-                )
+                    })
                 .ToListAsync();
             return result;
         }
 
-        public async Task<IEnumerable<CharacterAliases>> GetCharactersByAliasesAsync(string aliases) {
+        public async Task<IEnumerable<CharacterAliases>> GetCharactersByAliasesAsync(string aliases)
+        {
             var result = await _dbContext.Characters
+                .Where(
+                    o => o.Aliases != null &&
+                    o.Aliases.ToLower().Contains(aliases.ToLower())
+                )
                 .Select(
-                    c => new CharacterAliases{
+                    c => new CharacterAliases
+                    {
                         Id = c.Id,
                         FullName = c.FullName,
                         Aliases = c.Aliases
                     }
-                )
-                .Where(
-                    o => o.Aliases != null && 
-                    o.Aliases.ToLower().Contains(aliases.ToLower())
                 )
                 .ToListAsync();
             return result;
@@ -80,30 +88,41 @@ namespace MarvelAPI.Services.Character
 
         public async Task<CharacterDetail> GetCharacterByIdAsync(int id)
         {
-            var characterFound = await _dbContext.Characters.FindAsync(id);
-            
+            var characterFound = await _dbContext.Characters
+                .Include(x => x.Movies) // Include means to eager load
+                .ThenInclude(y => y.Movie) // What was missing is eager loading still only goes a layer deep
+                .Include(x => x.Teams)
+                .ThenInclude(y => y.Team) // So we need to use .ThenInclude to load that low level version of it.
+                .Include(x => x.TVShows)
+                .ThenInclude(y => y.TVShow)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
             var characterMovies = characterFound.Movies.Select(
-                m => new MovieListItem{
-                    Id = m.Id,
+                m => new MovieListItem
+                {
+                    Id = m.MovieId,
                     Title = m.Movie.Title
                 }
-            );
+                );
 
             var characterTVShows = characterFound.TVShows.Select(
-                t => new TVShowListItem{
+                t => new TVShowListItem
+                {
                     Id = t.Id,
                     Title = t.TVShow.Title
                 }
             );
-            
+
             var characterTeams = characterFound.Teams.Select(
-                tm => new TeamListItem{
+                tm => new TeamListItem
+                {
                     Id = tm.Id,
                     Name = tm.Team.Name
                 }
             );
 
-            var result = new CharacterDetail{
+            var result = new CharacterDetail
+            {
                 Id = characterFound.Id,
                 FullName = characterFound.FullName,
                 Age = characterFound.Age,
@@ -124,7 +143,8 @@ namespace MarvelAPI.Services.Character
         public async Task<bool> UpdateCharacterAsync(int characterId, CharacterUpdate request)
         {
             var characterFound = await _dbContext.Characters.FindAsync(characterId);
-            if (characterFound is null) {
+            if (characterFound is null)
+            {
                 return false;
             }
             characterFound.FullName = CheckUpdateProperty(characterFound.FullName, request.FullName);
@@ -138,7 +158,7 @@ namespace MarvelAPI.Services.Character
             var numOfChanges = await _dbContext.SaveChangesAsync();
             return numOfChanges == 1;
         }
-        
+
         public async Task<bool> DeleteCharacterAsync(int id)
         {
             var character = await _dbContext.Characters.FindAsync(id);
@@ -146,12 +166,14 @@ namespace MarvelAPI.Services.Character
             return await _dbContext.SaveChangesAsync() == 1;
         }
 
-        private string ReformatName(string name) {
+        private string ReformatName(string name)
+        {
             var result = String.Concat(name.Split(' ', '-')).ToLower();
             return result;
         }
 
-        private string CheckUpdateProperty(string from, string to) {
+        private string CheckUpdateProperty(string from, string to)
+        {
             return String.IsNullOrEmpty(to.Trim()) ? from : to.Trim();
         }
     }
